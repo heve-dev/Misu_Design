@@ -14,3 +14,10 @@
     color: #4d0422;
     font-weight: 600;
 }
+.navbar-misu a:hover{
+    color: #a10847;
+}
+.logo-misu{
+    width: 150px;
+    height: auto;
+}
