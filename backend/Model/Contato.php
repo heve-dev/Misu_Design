@@ -1,6 +1,6 @@
 <?php
-include_once 'backend/database/database.php';
-include_once 'backend/model/contato.php';
+include_once 'backend/Database/Database.php';
+include_once 'backend/Model/Contato.php';
 
 function buscaContato($db){
     $sql = 'SELECT id_contato, nome_contato, email_contato FROM tbl_contato ';

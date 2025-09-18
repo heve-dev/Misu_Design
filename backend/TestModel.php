@@ -1,7 +1,7 @@
 <?php
 
-include_once __DIR__.'Database/Database.php';
-include_once __DIR__.'Model/usuario.php';
+include_once __DIR__.'backend/Database/Database.php';
+include_once __DIR__.'backend/Model/Usuario.php';
 
 $hevellin = new Usuario($db);
 // $resultado = $hevellin->buscaUsuarios();
