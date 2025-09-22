@@ -5,7 +5,7 @@
 $username = 'root';
 $password = '';
 $host = 'localhost';
-$dbname = 'ki_pedreiro';
+$dbname = 'misu';
 
 try {
         $db = new \PDO('mysql:host=localhost;dbname='.$dbname.';charset=utf8mb4', $username, $password, array(

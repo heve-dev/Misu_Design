@@ -1,4 +1,9 @@
 <?php
+require_once __DIR__.'/../Config/Database.php';
+require_once __DIR__.'/../Model/usuario.php';
+require_once __DIR__.'/../Model/Config.php';
+
+$usuario = new Usuario($db);
 // função é um bloco { } de código que pode ser reutilizado várias vezes
 // uma função pode receber parâmetros ( ) e retornar um valor 
 // e ele fica esperando ser chamado para ser executado
@@ -23,7 +28,7 @@ class Usuario{
     }
  
 /* Executa uma instrução preparada passando um array de valores */
-function BuscaUsuarios($db){
+function buscarUsuario($db){
    
     $sql = 'SELECT nome_usuario, email_usuario FROM tbl_usuario';
     $statment = $db->prepare($sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
@@ -31,7 +36,7 @@ function BuscaUsuarios($db){
     return $resultado = $statment->fetchAll();
  
 }
-function BuscaUsuarioPorEmail($db,$email){
+function buscarUsuarioPorEmail($db,$email){
     $sql = 'SELECT nome_usuario, email_usuario FROM tbl_usuario WHERE email_usuario = :email';
     $statment = $db->prepare($sql);
     $statment->bindParam(':email', $email);
@@ -39,16 +44,16 @@ function BuscaUsuarioPorEmail($db,$email){
     return $resultado = $statment->fetchAll();
    
 }
-function RegistraUsuario($db, $nome, $email, $senha){
+function registrarUsuario($db, $nome, $email, $senha){
     $sql = 'INSERT INTO tbl_usuario (nome_usuario, email_usuario, senha_usuario)
     VALUES (:nome, :email, :senha)';
-    $statment = $db->prepare($sql);
-    $statment->bindParam(':nome', $nome);
-    $statment->bindParam(':email', $email);
-    $statment->bindParam(':senha',password_hash( $senha, PASSWORD_bCRYPT));
-    $statment->bindParam(':tipo', $tipo_usuario);
-    $statment->bindParam(':status', $status_usuario);
-    if($statment->execute()){
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':nome', $nome);
+    $stmt->bindParam(':email', $email);
+    $stmt->bindParam(':senha',password_hash( $senha, PASSWORD_bCRYPT));
+    $stmt->bindParam(':tipo', $tipo_usuario);
+    $stmt->bindParam(':status', $status_usuario);
+    if($stmt->execute()){
         return $this->db->lastInsertId();
         } else {
             return false;
@@ -88,14 +93,98 @@ function atualizarUsuario($id, $nome, $email, $senha = null, $tipo = null, $stat
         return $stmt->execute();
     }
 }
-function BuscaUsuariosPorID($db,$id){
+function buscarUsuariosPorId($db,$id){
     $sql = 'SELECT nome_usuario, email_usuario FROM tbl_usuario WHERE id_usuario = :id';
-    $statment = $db->prepare($sql);
-    $statment->bindParam(':id', $id);
-    return $statment->execute();
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    return $stmt->execute();
    
 }
+
+//19/09
  
+//metodo de inativar o usuario delete
+function inativarUsuario($id){
+    $dataatual = date('Y-m-d H:i:s');
+    $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $stmt->bindParam(':atual', $dataatual);
+    if ($stmt->execute()){
+    return true;
+    } else {
+        return false;
+    };
+}
+
+//metodo de ativar o usuario excluido read
+function ativarUsuario($id){
+    $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $stmt->bindParam(':atual', $dataatual);
+    if ($stmt->execute()){
+        return true;
+    } else {
+        return false;
+    };
+}
+// metodo de buscar todos os usuarios
+function buscarTodosUsuarios(){
+    $sql = "SELECT * FROM tbl_usuario WHERE excluido_em IS NULL";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// usuarios inativos
+function buscarTodosUsuariosInativos(){
+    $sql = "SELECT * FROM tbl_usuario WHERE excluido_em IS NOT NULL";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+//metodo de buscar usuario por email read
+function buscarUsuarioPorEmail($email){
+    $sql = "SELECT * FROM tbl_usuario WHERE email_usuario = :email AND excluido_em IS NULL";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+// emails inativos read
+function buscarUsuarioPorEmailInativo($email){
+    $sql = "SELECT * FROM tbl_usuario WHERE email_usuario = :email AND excluido_em IS NOT NULL";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // $ok = RegistraUsuario($db, 'João Silva', 'joaosilva@kkkkk.com', '123456');
 // echo $ok;
 // var_dump($resultado);
