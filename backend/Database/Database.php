@@ -20,3 +20,4 @@ try {
     throw new \PDOException($e->getMessage());
 }
 
+//instalar composer

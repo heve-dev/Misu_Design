@@ -1,4 +1,41 @@
 <?php
+
+namespace App\Misu\Model;
+
+
+class Usuario{
+    public $id_usuario;
+    public $nome_usuario;
+    public $email_usuario;
+    public $tipo_usuario;
+    public $senha_usuario;
+    public $status_usuario;
+    public $criado_em;
+    public $atualizado_em;
+    public $excluido_em;
+}
+
+public function buscarTodosUsuarios(){
+    //array associativo - chave a valor / esta dentro de um array posicional
+    return [
+        ['id_usuario' => 1, 'nome_usuario' => 'João Silva', 'email_usuario'],
+        ['id_usuario' => 2, 'nome_usuario' => 'Maria Souza', 'email_usuario']
+    ];
+   }
+
+   public function buscarUmaPessoa(){
+    //array posicional - cada posição é acessada por posição
+    return ['heve' => 1, 'nome_usuario' => 'João Silva', 'email_usuario'];
+    
+   }
+
+   public function buscarTexto(){
+    return "o gato roeu a roupa do rei de roma";
+   }
+
+
+
+
 require_once __DIR__.'/../Config/Database.php';
 require_once __DIR__.'/../Model/usuario.php';
 require_once __DIR__.'/../Model/Config.php';

@@ -15,13 +15,12 @@ $hevellin = new Usuario($db);
 var_dump($resultado);
 
 
-$id = $usuario->inserirUsuario('Hevellin', 'aaaa@gmail.com','123456','cliente','ativo');
-$resultado + $endereco->inserirEndereco(
-    $id, 'rua', '123','complemento', 'bairro', 'cidade', 'estado', 'cep', 'uf'
-);
-//$resultado = $endereco->excluirEndereco(1);
+$id = $usuario->inserirPerfilsuario('Hevellin', 'aaaa@gmail.com','123456','cliente','ativo');
+$resultado + $perfil_usuario->inserirPerfil(
+    $id, 'foto', 'banner','descrição');
+//$resultado = $endereco->excluirPerfil(1);
 if ($resultado) {
-    echo "Endereço inserido com sucesso!";
+    echo "Perfil inserido com sucesso!";
 } else {
-    echo "Erro ao inserir endereço.";
+    echo "Erro ao inserir Perfil.";
 }
