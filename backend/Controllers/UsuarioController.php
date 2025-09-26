@@ -9,7 +9,7 @@ class UsuarioController {
     }
     public function listar() {
        $resultado = $this->usuarioModel->buscarTodosUsuarios();
-       var_dump($resultado);
+       var_dump($resultado[1]['email_usuario']);
     }
      public function textoParaMaiusculo() {
             $resultado = $this->usuarioModel->buscarTexto();
