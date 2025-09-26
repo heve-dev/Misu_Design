@@ -65,3 +65,22 @@ class UsuarioController {
                $resultado = implode(" ", $resultado);
                echo ($resultado);
          }
+
+
+         // atividade 1
+
+         public function converterEmArray() {
+        $resultado = $this->buscarTexto();
+        //          converter string em array
+        $resultado = explode(" php "," programação "," backend "," desenvolvimento web "," api ", $resultado);
+        var_dump($resultado);
+     }
+
+        // atividade 2
+
+         public function converterEmArray() {
+        $resultado = $this->buscarTexto();
+        //          converter string em array
+        $resultado = explode(" php "," programação "," backend "," desenvolvimento web "," api ", $resultado);
+        var_dump($resultado);
+     }
