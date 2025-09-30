@@ -1,5 +1,6 @@
 <?php
 namespace App\Misu\Controllers;
+
 use App\Misu\Model\Usuario;
 use App\Misu\Database\Database;
 
@@ -9,17 +10,43 @@ class UsuarioController {
     public function __construct(){
         $this->db = Database::getInstance();
         $this->usuario = new Usuario($this->db);
-
-    public $usuarioModel;
-        $this->usuarioModel = new Usuario();
-    }
    }
 
      // método - index
     public function index() {
         $resultado = $this->usuario->buscarUsuario();
         return $resultado;
+       // var_dump ($resultado);
 }
+        //view - ao ter o GET vai exibir a pagina
+        public function viewCriarUsuarios(){
+         echo "Listar Usuarios";
+        }
+        public function viewListarUsuarios(){
+         echo "Listar Usuarios";
+        }
+        public function viewEditarUsuarios(){
+            echo "Listar Usuarios";
+        }
+        public function viewExcluirUsuarios(){
+            echo "Listar Usuarios";
+        }
+        // vão executar e serão chamados pelo formulario
+        public function salvarUsuarios(){
+            echo "Listar Usuarios";
+        }
+        public function atuzalizarUsuarios(){
+            echo "Listar Usuarios";
+        }
+        public function deletarUsuarios(){
+            echo "Listar Usuarios";
+        }
+
+
+
+        
+    }
+
      // método - listar
     public function listar() {
        $resultado = $this->usuarioModel->buscarTodosUsuarios();
@@ -65,22 +92,3 @@ class UsuarioController {
                $resultado = implode(" ", $resultado);
                echo ($resultado);
          }
-
-
-         // atividade 1
-
-         public function converterEmArray() {
-        $resultado = $this->buscarTexto();
-        //          converter string em array
-        $resultado = explode(" php "," programação "," backend "," desenvolvimento web "," api ", $resultado);
-        var_dump($resultado);
-     }
-
-        // atividade 2
-
-         public function converterEmArray() {
-        $resultado = $this->buscarTexto();
-        //          converter string em array
-        $resultado = explode(" php "," programação "," backend "," desenvolvimento web "," api ", $resultado);
-        var_dump($resultado);
-     }

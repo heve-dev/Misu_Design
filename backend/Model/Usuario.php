@@ -2,6 +2,7 @@
 
 namespace App\Misu\Model;
 
+use PDO;
 
 class Usuario{
     public $id_usuario;
@@ -15,7 +16,7 @@ class Usuario{
     public $excluido_em;
 }
 
-public function buscarTodosUsuarios(){
+    public function buscarTodosUsuarios(){
     //array associativo - chave a valor / esta dentro de um array posicional
     return [
         ['id_usuario' => 1, 'nome_usuario' => 'João Silva', 'email_usuario'],
