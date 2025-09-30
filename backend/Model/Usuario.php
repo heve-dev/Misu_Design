@@ -14,7 +14,7 @@ class Usuario{
     public $criado_em;
     public $atualizado_em;
     public $excluido_em;
-}
+
 
     public function buscarTodosUsuarios(){
     //array associativo - chave a valor / esta dentro de um array posicional
@@ -33,6 +33,7 @@ class Usuario{
    public function buscarTexto(){
     return "o gato roeu a roupa do rei de roma";
    }
+}
 
 
 
