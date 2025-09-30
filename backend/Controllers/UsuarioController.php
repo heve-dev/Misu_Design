@@ -22,10 +22,13 @@ class UsuarioController {
 
 
 //30.09
+  //raiz do array
     public function viewListarUsuarios() {
-        View::render("usuario/index");
+        $dados = $this->usuario->buscaUsuarios();
+        View::render("usuario/index", ["usuarios" => $dados]);
         
     }
+//---
     public function viewCriarUsuarios() {
         View::render("usuario/create");
         
