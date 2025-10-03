@@ -1,15 +1,11 @@
 <?php
 
+namespace App\Misu\Model;
 
-require_once __DIR__.'/../Config/Database.php';
-require_once __DIR__.'/../Model/usuario.php';
-require_once __DIR__.'/../Model/Config.php';
+use PDO;
+
 $usuario = new Usuario($db);
 $pagamento = new Pagamento($db);
-
-
-include_once 'backend/database/database.php';
-include_once 'backend/model/pagamento.php';
 
 
 /* Executa uma instrução preparada passando um array de valores */

@@ -1,10 +1,8 @@
 <?php
 
-require_once __DIR__.'/../Config/Database.php';
-require_once __DIR__.'/../Model/usuario.php';
-require_once __DIR__.'/../Model/Config.php';
-$usuario = new Usuario($db);
-$servico = new Servico($db);
+namespace App\Misu\Model;
+
+use PDO;
 
 /* Executa uma instrução preparada passando um array de valores */
 class Servico{

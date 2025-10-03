@@ -1,9 +1,7 @@
 <?php
-// função é um bloco { } de código que pode ser reutilizado várias vezes
-// uma função pode receber parâmetros ( ) e retornar um valor 
-// e ele fica esperando ser chamado para ser executado
-// function nomeDaFuncao($parametro1, $parametro2){ ... return ... }
-//dentro da função não enxergamos variaveis globais
+namespace App\Misu\Model;
+
+use PDO;
 
 /* Executa uma instrução preparada passando um array de valores */
 class Usuario{

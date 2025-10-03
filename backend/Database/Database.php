@@ -22,7 +22,7 @@
 
 //instalar composer
 
-namespace App\Misu\Database\Database;
+namespace App\Misu\Database;
 
 use PDO;
 use PDOException;

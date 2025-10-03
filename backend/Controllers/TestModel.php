@@ -17,7 +17,7 @@ $hevellin = new Usuario($db);
 var_dump($resultado);
 
 
-$id = $usuario->inserirPerfilsuario('Hevellin', 'aaaa@gmail.com','123456','cliente','ativo');
+$id = $usuario->inserirPerfilUsuario('Hevellin', 'aaaa@gmail.com','123456','cliente','ativo');
 $resultado + $perfil_usuario->inserirPerfil(
     $id, 'foto', 'banner','descrição');
 //$resultado = $perfil->excluirPerfil(1);
@@ -26,3 +26,4 @@ if ($resultado) {
 } else {
     echo "Erro ao inserir Perfil.";
 }
+var_dump($resultado);
