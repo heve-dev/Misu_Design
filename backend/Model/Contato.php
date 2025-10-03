@@ -13,111 +13,121 @@ class Contato{
     private $atualizado_em;
     private $excluido_em;
     private $db;
-    //construtor inicializa a classe e/ou atributos
-    public function __construct($db){
+ // contrutor inicializa a classe e ou atributos
+  public function __construct($db){
         $this->db = $db;
     }
- 
-/* Executa uma instrução preparada passando um array de valores */
-function buscaContato($db){
-    $sql = 'SELECT id_contato, nome_contato, email_contato, telefone_contato, mensagem_contato FROM tbl_contato ';
-    $statment = $db->prepare($sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-    $statment->execute();
-    return $resultado = $statment->fetchAll();
-}
+ // metodo de buscar todos os usuarios
+    function buscarUsuarios(){
+        $sql = "SELECT * FROM tbl_usuario";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+function buscarUsuariosInativos(){
+        $sql = "SELECT * FROM tbl_usuario where excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-function BuscaContatoPorEmail($db,$email){
-    $sql = 'SELECT nome_contato, email_contato FROM tbl_contato WHERE email_contato = :email';
-    $statment = $db->prepare($sql);
-    $statment->bindParam(':email', $email);
-    $statment->execute();
-    return $resultado = $statment->fetchAll();
+    function buscarUsuariosPorId($db,$id){
+    $sql = 'SELECT nome_usuario, email_usuario FROM tbl_usuario WHERE id_usuario = :id';
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    return $stmt->execute();
    
 }
-function registrarContato($db, $nome, $email, $telefone, $mensagem){
-    $sql = 'INSERT INTO tbl_contato (nome_contato, email_contato, telefone_contato, mensagem_contato)
-    VALUES (:nome, :email, :telefone, :mensagem)';
-    $statment = $db->prepare($sql);
-    $statment->bindParam(':nome', $nome);
-    $statment->bindParam(':email', $email);
-    $statment->bindParam(':telefone', $telefone);
-    $statment->bindParam(':mensagem', $mensagem);
-    if($statment->execute()){
-        return $this->db->lastInsertId();
-        } else {
+
+    // metodo de buscar todos usuario por email
+    function buscarUsuariosPorEMail($email){
+        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':email', $email); 
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    function buscarUsuariosPorEMailInativo($email){
+        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':email', $email); 
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+// metodo de inserir usuario create
+    function inserirUsuario(
+        $nome, 
+        $email, 
+        $senha, 
+        $tipo, 
+        $status){
+        $senha = password_hash($senha, PASSWORD_DEFAULT);
+        $sql = "INSERT INTO tbl_usuario (nome_usuario, email_usuario, 
+        senha_usuario, tipo_usuario, status_usuario) 
+                VALUES (:nome, :email, :senha, :tipo, :status)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':status', $status);
+        if($stmt->execute()){
+            return $this->db->lastInsertId();
+        }else{
             return false;
         }
     }
-
-function atualizarContato($id, $nome, $email, $telefone, $mensagem = null, $tipo = null, $status = null){
-        $sql = "UPDATE tbl_contato SET nome_contato = :nome, email_contato = :email";
-        if($nome){
-            $sql .= ", nome_contato = :nome";
-        }
-        if($email){
-            $sql .= ", email_contato = :email";
-        }
-        if($mensagem){
-            $sql .= ", mensagem_contato = :mensagem";
-        }
-        if($telefone){
-            $sql .= ", telefone_contato = :telefone";
-        }
-        if($tipo){
-            $sql .= ", tipo_contato = :tipo";
-        }
-        if($status){
-            $sql .= ", status_contato = :status";
-        }
-        $sql .= ", atualizado_em = NOW() WHERE id_contato = :id";
+  // metodo de atualizar o usuario // update
+    function atualizarUsuario($id, $nome, $email, $senha, $tipo, $status){
+        $senha = password_hash($senha, PASSWORD_DEFAULT);
+        $dataatual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_usuario SET nome_usuario = :nome,
+         email_usuario = :email, 
+         senha_usuario = :senha, 
+         tipo_usuario = :tipo,
+         status_usuario = :status,
+         atualizado_em = :atual
+         WHERE id_usuario = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':telefone', $telefone);
-        $stmt->bindParam(':mensagem', $mensagem);
-        if($nome){
-            $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':atual', $dataatual);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
         }
-        if($email){
-            $stmt->bindParam(':email', $email);
-        }
-        if($telefone){
-            $stmt->bindParam(':telefone', $telefone);
-        }
-
-        if($mensagem){
-            $stmt->bindParam(':mensagem', $mensagem);
-        }
-        if($tipo){
-            $stmt->bindParam(':tipo', $tipo);
-        }
-        if($status){
-            $stmt->bindParam(':status', $status);
-        }
-        return $stmt->execute();
     }
-    
-    function deletarContato($id){
-        $sql = "UPDATE tbl_contato SET excluido_em = NOW() WHERE id_contato = :id";
+    // metodo de inativar o usuario // delete
+    function excluirUsuario($id){
+        $dataatual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+        $stmt->bindParam(':atual', $dataatual);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+// metodo de ativar o usuario excluido
+    function ativarUsuario($id){
+        $dataatual = NULL;
+        $sql = "UPDATE tbl_usuario SET
+         excluido_em = :atual
+         WHERE id_usuario = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':atual', $dataatual);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
-
-function buscarContatoPorId($db, $id){
-    $sql = 'SELECT id_contato, nome_contato, email_contato FROM tbl_contato WHERE id_contato = :id';
-    $statment = $db->prepare($sql);
-    $statment->bindParam(':$id', $id); 
-    return $statment->execute();
-}
- 
-// $ok = RegistraUsuario($db, 'João Silva', 'joaosilva@kkkkk.com', '123456');
-// echo $ok;
-// var_dump($resultado);
-//$ok = registrarUsuario($db, 'Hevellin', 'hevellin.9@xxx.com', '121212');
-//echo $ok;
-
-//$resultado = buscaUsuarios($db);
-//var_dump($resultado);

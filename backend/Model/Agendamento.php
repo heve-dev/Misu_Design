@@ -1,18 +1,18 @@
 <?php
+namespace App\Misu\Model;
 
-require_once __DIR__.'/../Config/Database.php';
-require_once __DIR__.'/../Model/usuario.php';
-require_once __DIR__.'/../Model/Config.php';
+use PDO;
+
 $usuario = new Usuario($db);
 $agendamento = new Agendamento($db);
 
 /* Executa uma instrução preparada passando um array de valores */
 class Agendamento{
     private $id_agendamento;
-    private $nome_agendamento;
-    private $email_agendamento;
-    private $tipo_agendamento;
-    private $senha_agendamento;
+    private $id_cliente;
+    private $id_servico;
+    private $data_solicitada;
+    private $total_agendamento;
     private $status_agendamento;
     private $criado_em;
     private $atualizado_em;
@@ -22,32 +22,150 @@ class Agendamento{
     public function __construct($db){
         $this->db = $db;
     }
+
+    //  $id_agendamento;
+    //  $id_cliente;
+    //  $id_servico;
+    //  $data_solicitada;
+    //  $total_agendamento;
+    //  $status_agendamento;
+    //  $criado_em;
+    //  $atualizado_em;
+    //  $excluido_em;
  
-/* Executa uma instrução preparada passando um array de valores */
-function buscarAgendamento($db){
-   
-    $sql = 'SELECT nome_agendamento, email_agendamento FROM tbl_agendamento';
-    $statment = $db->prepare($sql, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
-    $statment->execute();
-    return $resultado = $statment->fetchAll();
- 
+
+
+ // metodo de buscar todos os Agendamentos
+    function buscarAgendamento($db){
+        $sql = "SELECT * FROM tbl_agendamento";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    function buscarAgendamentosInativos(){
+        $sql = "SELECT * FROM tbl_usuario where excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function buscarAgendamentoPorID($db,$id){
+        $sql = 'SELECT nome_agendamento, email_agendamento FROM tbl_agendamento WHERE id_agendamento = :id';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+
+    //-----
+
+    // metodo de buscar todos usuario por email
+    function buscarUsuariosPorEMail($email){
+        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':email', $email); 
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    function buscarUsuariosPorEMailInativo($email){
+        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':email', $email); 
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+// metodo de inserir usuario create
+    function inserirUsuario(
+        $nome, 
+        $email, 
+        $senha, 
+        $tipo, 
+        $status){
+        $senha = password_hash($senha, PASSWORD_DEFAULT);
+        $sql = "INSERT INTO tbl_usuario (nome_usuario, email_usuario, 
+        senha_usuario, tipo_usuario, status_usuario) 
+                VALUES (:nome, :email, :senha, :tipo, :status)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':status', $status);
+        if($stmt->execute()){
+            return $this->db->lastInsertId();
+        }else{
+            return false;
+        }
+    }
+  // metodo de atualizar o usuario // update
+    function atualizarUsuario($id, $nome, $email, $senha, $tipo, $status){
+        $senha = password_hash($senha, PASSWORD_DEFAULT);
+        $dataatual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_usuario SET nome_usuario = :nome,
+         email_usuario = :email, 
+         senha_usuario = :senha, 
+         tipo_usuario = :tipo,
+         status_usuario = :status,
+         atualizado_em = :atual
+         WHERE id_usuario = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':atual', $dataatual);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    // metodo de inativar o usuario // delete
+    function excluirUsuario($id){
+        $dataatual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':atual', $dataatual);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+// metodo de ativar o usuario excluido
+    function ativarUsuario($id){
+        $dataatual = NULL;
+        $sql = "UPDATE tbl_usuario SET
+         excluido_em = :atual
+         WHERE id_usuario = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':atual', $dataatual);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
-function buscarAgendamentoPorEmail($db,$email){
-    $sql = 'SELECT nome_agendamento, email_agendamento FROM tbl_agendamento WHERE email_agendamento = :email';
-    $statment = $db->prepare($sql);
-    $statment->bindParam(':email', $email);
-    $statment->execute();
-    return $resultado = $statment->fetchAll();
-   
-}
-function registrarAgendamento($db, $nome, $email, $senha){
-    $sql = 'INSERT INTO tbl_agendamento (nome_agendamento, email_agendamento, senha_agendamento)
-    VALUES (:nome, :email, :senha)';
+
+
+
+
+
+//----
+
+
+
+function registrarAgendamento($db, $data_solicitada, $total_agendamento, $status_agendamento){
+    $sql = 'INSERT INTO tbl_agendamento (data_solicitada, total_agendamento, status_agendamento)
+    VALUES (:data, :total, :status)';
     $stmt = $db->prepare($sql);
-    $stmt->bindParam(':nome', $nome);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':senha',password_hash( $senha, PASSWORD_bCRYPT));
-    $stmt->bindParam(':tipo', $tipo_agendamento);
+    $stmt->bindParam(':data', $data_solicitada);
+    $stmt->bindParam(':total', $total_agendamento);
     $stmt->bindParam(':status', $status_agendamento);
     if($stmt->execute()){
         return $this->db->lastInsertId();
@@ -55,8 +173,8 @@ function registrarAgendamento($db, $nome, $email, $senha){
             return false;
         }
     }
-function atualizarAgendamento($id, $nome, $email, $senha = null, $tipo = null, $status = null){
-        $sql = "UPDATE tbl_agendamento SET nome_agendamento = :nome, email_agendamento = :email";
+function atualizarAgendamento($id,$db, $data_solicitada, $total_agendamento, $status_agendamento = null){
+        $sql = "UPDATE tbl_agendamento SET nome_agendamento = :nome, total_agendamento = :total";
         if($senha){
             $sql .= ", senha_agendamento = :senha";
         }
@@ -88,14 +206,8 @@ function atualizarAgendamento($id, $nome, $email, $senha = null, $tipo = null, $
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
     }
-}
-function buscarAgendamentoPorID($db,$id){
-    $sql = 'SELECT nome_agendamento, email_agendamento FROM tbl_agendamento WHERE id_agendamento = :id';
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':id', $id);
-    return $stmt->execute();
-   
-}
+
+
 
 //19/09
  
@@ -157,3 +269,5 @@ function buscarAgendamentoPorEmailInativo($email){
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
+
+

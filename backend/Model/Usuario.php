@@ -21,7 +21,7 @@ class Usuario{
         $this->db = $db;
     }
  // metodo de buscar todos os usuarios
-    function buscarUsuarios(){
+    function buscarUsuario(){
         $sql = "SELECT * FROM tbl_usuario";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

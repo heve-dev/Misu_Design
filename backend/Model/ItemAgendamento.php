@@ -4,75 +4,57 @@ namespace App\Misu\Model;
 
 use PDO;
 
-class Usuario{
-    private $id_usuario;
-    private $nome_usuario;
-    private $email_usuario;
-    private $tipo_usuario;
-    private $senha_usuario;
-    private $status_usuario;
+class ItemAgendamento{
+    private $id_item_agendamento;
+    private $id_agendamento;
+    private $id_servico;
+    private $id_cliente;
+    private $valor_servico;
+    private $quantidade_solicitada;
+    private $descricao_item_agendamento;
+    private $total_item;
+    private $status_item_agendamento;
     private $criado_em;
     private $atualizado_em;
     private $excluido_em;
     private $db;
-
  // contrutor inicializa a classe e ou atributos
   public function __construct($db){
         $this->db = $db;
     }
- // metodo de buscar todos os usuarios
-    function buscarUsuarios(){
-        $sql = "SELECT * FROM tbl_usuario";
+ // metodo de buscar todos os Itemagendamento
+    function buscarItemAgendamento(){
+        $sql = "SELECT * FROM tbl_item_agendamento";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-function buscarUsuariosInativos(){
-        $sql = "SELECT * FROM tbl_usuario where excluido_em IS NOT NULL";
+function buscarItemAgendamentoInativos(){
+        $sql = "SELECT * FROM tbl_item_agendamento where excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function buscarUsuariosPorId($db,$id){
-    $sql = 'SELECT nome_usuario, email_usuario FROM tbl_usuario WHERE id_usuario = :id';
+    function buscarItemAgendamentoPorId($db,$id){
+    $sql = 'SELECT valor_servico, quantidade_solicitada, status_item_agendamento FROM tbl_item_agendamento WHERE id_item_agendamento = :id';
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':id', $id);
     return $stmt->execute();
    
 }
 
-    // metodo de buscar todos usuario por email
-    function buscarUsuariosPorEMail($email){
-        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':email', $email); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    function buscarUsuariosPorEMailInativo($email){
-        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':email', $email); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 // metodo de inserir usuario create
-    function inserirUsuario(
-        $nome, 
-        $email, 
-        $senha, 
-        $tipo, 
-        $status){
-        $senha = password_hash($senha, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO tbl_usuario (nome_usuario, email_usuario, 
-        senha_usuario, tipo_usuario, status_usuario) 
-                VALUES (:nome, :email, :senha, :tipo, :status)";
+    function inserirItemAgendamento($valor, $quantidade, $descricao, $total, $status){
+       
+        $sql = "INSERT INTO tbl_item_agendamento (valor_servico, quantidade_solicitada, 
+        descricao_item_agendamento, total_item_agendamento, status_item_agendamento) 
+                VALUES (:valor, :quantidade, :descricao, :total, :status)";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senha);
-        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':valor', $valor);
+        $stmt->bindParam(':quantidade', $quantidade);
+        $stmt->bindParam(':descricao', $descricao);
+        $stmt->bindParam(':total',  $total);
         $stmt->bindParam(':status', $status);
         if($stmt->execute()){
             return $this->db->lastInsertId();
@@ -81,22 +63,22 @@ function buscarUsuariosInativos(){
         }
     }
   // metodo de atualizar o usuario // update
-    function atualizarUsuario($id, $nome, $email, $senha, $tipo, $status){
-        $senha = password_hash($senha, PASSWORD_DEFAULT);
+    function atualizarItemAgendamento($id, $valor, $quantidade, $descricao, $total, $status){
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_usuario SET nome_usuario = :nome,
-         email_usuario = :email, 
-         senha_usuario = :senha, 
-         tipo_usuario = :tipo,
-         status_usuario = :status,
+        $sql = "UPDATE tbl__item_agendamento SET 
+         valor_servico = :valor,
+         quantidade_solicitada = :quantidade, 
+         descricao__item_agendamento = :descricao, 
+         total__item_agendamento = :total,
+         status__item_agendamento = :status,
          atualizado_em = :atual
-         WHERE id_usuario = :id";
+         WHERE id__item_agendamento = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senha);
-        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':valor', $valor);
+        $stmt->bindParam(':quantidade', $quantidade);
+        $stmt->bindParam(':descricao', $descricao);
+        $stmt->bindParam(':total',  $total);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':atual', $dataatual);
         if($stmt->execute()){
@@ -105,10 +87,11 @@ function buscarUsuariosInativos(){
             return false;
         }
     }
-    // metodo de inativar o usuario // delete
-    function excluirUsuario($id){
+    // metodo de inativar o Itemagendamento// delete
+    function excluirItemAgendamento($id){
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
+        $sql = "UPDATE tbl_item_agendamento SET excluido_em = :atual WHERE 
+        id_item_agendamento = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);
@@ -118,12 +101,12 @@ function buscarUsuariosInativos(){
             return false;
         }
     }
-// metodo de ativar o usuario excluido
-    function ativarUsuario($id){
+// metodo de ativar o _item_Agendamento excluido
+    function ativarItemAgendamento($id){
         $dataatual = NULL;
-        $sql = "UPDATE tbl_usuario SET
+        $sql = "UPDATE tbl_item_agendamento SET
          excluido_em = :atual
-         WHERE id_usuario = :id";
+         WHERE id_item_agendamento = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);
