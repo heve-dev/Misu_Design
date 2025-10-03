@@ -2,7 +2,7 @@
 include_once 'backend/Database/Database.php';
 include_once 'backend/Model/Usuario.php';
 
-$resultado = buscaUsuarios($db);
+$resultado = buscarUsuarios($db);
 
 // loop - para-for
 // for ($i=0; $i < count($resultado); $i++){ 
