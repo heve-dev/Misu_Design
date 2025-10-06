@@ -23,65 +23,59 @@ class Usuario{
     }
 // --------------- MÉTODOS DE BUSCA DE DADOS ---------------
 
- // metodo de buscar todos os Agendamentos
-    function buscarAgendamentos($db){
-        $sql = "SELECT * FROM tbl_agendamento";
+    //  $id_perfil_usuario;
+    //  $id_usuario;
+    //  $descricao_perfil_usuario;
+    //  $foto_perfil_usuario;
+    //  $banner_perfil_usuario;
+    //  $criado_em;
+    //  $atualizado_em;
+    //  $excluido_em;
+
+ // metodo de buscar todos os Perfil Usuario
+    function buscarPerfilUsuario($db){
+        $sql = "SELECT * FROM tbl_perfil_usuario";
         $stmt = $this->db->prepare($sql);
         $stmt->execute($db);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-// metodo de buscar todos os agendamentos por usuario
-    function buscarAgendamentoPorUsuario($usuario){
-        $sql = "SELECT * FROM tbl_agendamento where id_cliente = :usuario and excluido_em IS NULL";
+// metodo de buscar todos os Perfil Usuario por usuario
+    function buscarPerfilUsuarioPorUsuario($usuario){
+        $sql = "SELECT * FROM tbl_perfil_usuario where id_cliente = :usuario and excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':usuario', $usuario); 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-// metodo de buscar todos os agendamentos por Servico
-    function buscarAgendamentoPorServico($servico){
-        $sql = "SELECT * FROM tbl_agendamento where id_servico = :servico and excluido_em IS NULL";
+// metodo de buscar todos os Perfil Usuario por data
+    function buscarPerfilUsuarioPorCriacao($criado_em){
+        $sql = "SELECT * FROM tbl_perfil_usuario where criado_em = :criado_em and excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':servico', $servico); 
+        $stmt->bindParam(':criado_em', $criado_em); 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-// metodo de buscar todos os agendamentos por data
-    function buscarAgendamentoPorData($data_solicitada){
-        $sql = "SELECT * FROM tbl_agendamento where data_solicitada = :data_solicitada and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':data_solicitada', $data_solicitada); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-     // metodo de buscar todos os agendamentos pelo Total
-     function buscarAgendamentoPorTotal($total_agendamento){
-        $sql = "SELECT * FROM tbl_agendamento where total_agendamento = :total_agendamento and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':total_agendamento', $total_agendamento); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    // metodo de buscar todos os agendamentos por status
-     function buscarAgendamentoPorStatus($status_agendamento){
-        $sql = "SELECT * FROM tbl_agendamento where status_agendamento = :status_agendamento and excluido_em IS NOT NULL";
+    
+    // metodo de buscar todos os Perfil Usuario por status
+     function buscarPerfilUsuarioPorStatus($status_agendamento){
+        $sql = "SELECT * FROM tbl_perfil_usuario where status_agendamento = :status_agendamento and excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':status_agendamento', $status_agendamento); 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // agendamentos inativos
-    function buscarTodosAgendamentosInativos(){
-        $sql = "SELECT * FROM tbl_agendamento where excluido_em IS NOT NULL";
+    // Perfil Usuario inativos
+    function buscarTodosPerfilUsuarioInativos(){
+        $sql = "SELECT * FROM tbl_perfil_usuario where excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // metodo de buscar agendamento por ID
-    function buscarAgendamentoPorID($db,$id){
-        $sql = 'SELECT id_agendamento FROM tbl_agendamento WHERE id_agendamento = :id';
+    // metodo de buscar PerfilUsuario por ID
+    function buscarPerfilUsuarioPorID($db,$id){
+        $sql = 'SELECT id_agendamento FROM tbl_perfil_usuario WHERE id_agendamento = :id';
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
@@ -93,10 +87,10 @@ class Usuario{
 
  
 
-// metodo de registrar agendamento
+// metodo de registrar PerfilUsuario
 
-function registrarAgendamento($db, $data_solicitada, $total_agendamento, $status_agendamento){
-    $sql = 'INSERT INTO tbl_agendamento (data_solicitada, total_agendamento, status_agendamento)
+function registrarPerfilUsuario($db, $data_solicitada, $total_agendamento, $status_agendamento){
+    $sql = 'INSERT INTO tbl_perfil_usuario (data_solicitada, total_agendamento, status_agendamento)
     VALUES (:data_solicitada, :total_agendamento, :status_agendamento)';
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':data_solicitada', $data_solicitada);
@@ -109,10 +103,10 @@ function registrarAgendamento($db, $data_solicitada, $total_agendamento, $status
         }
     }
      
-  // metodo de atualizar o usuario // update
-    function atualizarAgendamento($id, $data_solicitada, $status_agendamento, $total_agendamento){
+  // metodo de atualizar o PerfilUsuario // update
+    function atualizarPerfilUsuario($id, $data_solicitada, $status_agendamento, $total_agendamento){
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_agendamento SET data_solicitada = :data_solicitada,
+        $sql = "UPDATE tbl_perfil_usuario SET data_solicitada = :data_solicitada,
          email_agendamento = :email, 
          total_agendamento = :total_agendamento, 
          status_agendamento = :status,
@@ -131,10 +125,10 @@ function registrarAgendamento($db, $data_solicitada, $total_agendamento, $status
         }
     }
 
-//metodo de inativar o agendamento // delete
-function inativarAgendamento($id){
+//metodo de inativar o PerfilUsuario // delete
+function inativarPerfilUsuario($id){
     $dataatual = date('Y-m-d H:i:s');
-    $sql = "UPDATE tbl_agendamento SET excluido_em = :atual WHERE id_agendamento = :id";
+    $sql = "UPDATE tbl_perfil_usuario SET excluido_em = :atual WHERE id_agendamento = :id";
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(':id', $id);
     $stmt->bindParam(':atual', $dataatual);
@@ -145,9 +139,9 @@ function inativarAgendamento($id){
     };
 }
 
-    //metodo de ativar o agendamento excluido 
-function ativarAgendamentoExcluido($id){
-    $sql = "UPDATE tbl_agendamento SET excluido_em = :atual WHERE id_agendamento = :id";
+    //metodo de ativar o PerfilUsuario excluido 
+function ativarPerfilUsuarioExcluido($id){
+    $sql = "UPDATE tbl_perfil_usuario SET excluido_em = :atual WHERE id_agendamento = :id";
      $dataatual = date('Y-m-d H:i:s');
     $stmt = $this->db->prepare($sql);
     $stmt->bindParam(':id', $id);
