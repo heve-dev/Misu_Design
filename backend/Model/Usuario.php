@@ -20,20 +20,24 @@ class Usuario{
   public function __construct($db){
         $this->db = $db;
     }
+
+// --------------- MÉTODOS DE BUSCA DE DADOS ---------------
+
  // metodo de buscar todos os usuarios
-    function buscarUsuario(){
+    function buscarUsuarios(){
         $sql = "SELECT * FROM tbl_usuario";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+// metodo de buscar todos os usuarios inativos   
 function buscarUsuariosInativos(){
         $sql = "SELECT * FROM tbl_usuario where excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+// metodo de buscar todos os usuarios por ID
     function buscarUsuariosPorId($db,$id){
     $sql = 'SELECT nome_usuario, email_usuario FROM tbl_usuario WHERE id_usuario = :id';
     $stmt = $db->prepare($sql);
@@ -57,13 +61,11 @@ function buscarUsuariosInativos(){
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-// metodo de inserir usuario create
-    function inserirUsuario(
-        $nome, 
-        $email, 
-        $senha, 
-        $tipo, 
-        $status){
+
+// --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
+
+// metodo de registrar usuario // create
+    function registrarUsuarios($nome, $email, $senha, $tipo, $status){
         $senha = password_hash($senha, PASSWORD_DEFAULT);
         $sql = "INSERT INTO tbl_usuario (nome_usuario, email_usuario, 
         senha_usuario, tipo_usuario, status_usuario) 
@@ -80,8 +82,9 @@ function buscarUsuariosInativos(){
             return false;
         }
     }
+
   // metodo de atualizar o usuario // update
-    function atualizarUsuario($id, $nome, $email, $senha, $tipo, $status){
+    function atualizarUsuarios($id, $nome, $email, $senha, $tipo, $status){
         $senha = password_hash($senha, PASSWORD_DEFAULT);
         $dataatual = date('Y-m-d H:i:s');
         $sql = "UPDATE tbl_usuario SET nome_usuario = :nome,
@@ -106,7 +109,7 @@ function buscarUsuariosInativos(){
         }
     }
     // metodo de inativar o usuario // delete
-    function excluirUsuario($id){
+    function inativarUsuarios($id){
         $dataatual = date('Y-m-d H:i:s');
         $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
         $stmt = $this->db->prepare($sql);
@@ -119,7 +122,7 @@ function buscarUsuariosInativos(){
         }
     }
 // metodo de ativar o usuario excluido
-    function ativarUsuario($id){
+    function ativarUsuariosExcluidos($id){
         $dataatual = NULL;
         $sql = "UPDATE tbl_usuario SET
          excluido_em = :atual

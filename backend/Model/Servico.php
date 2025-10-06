@@ -4,70 +4,86 @@ namespace App\Misu\Model;
 
 use PDO;
 
+$usuario = new Usuario($db);
+$servico = new Servico($db);
+
 /* Executa uma instrução preparada passando um array de valores */
 class Servico{
     private $id_servico;
     private $id_categoria;
     private $nome_servico;
-    private $email_servico;
-    private $tipo_servico;
-    private $senha_servico;
+    private $descricao_servico;
+    private $valor_servico;
+    private $foto_servico;
     private $status_servico;
     private $criado_em;
     private $atualizado_em;
     private $excluido_em;
-    private $db;
+    private  $db;
 
  // contrutor inicializa a classe e ou atributos
   public function __construct($db){
         $this->db = $db;
     }
- // metodo de buscar todos os usuarios
-    function buscarUsuarios(){
-        $sql = "SELECT * FROM tbl_usuario";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-function buscarUsuariosInativos(){
-        $sql = "SELECT * FROM tbl_usuario where excluido_em IS NOT NULL";
+
+// --------------- MÉTODOS DE BUSCA DE DADOS ---------------
+
+ // metodo de buscar todos os servicos
+    function buscarTodosServicos(){
+        $sql = "SELECT * FROM tbl_servico";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function buscarUsuariosPorId($db,$id){
-    $sql = 'SELECT nome_usuario, email_usuario FROM tbl_usuario WHERE id_usuario = :id';
+    // metodo de buscar todos os servicos
+    function buscarServicos(){
+        $sql = "SELECT * FROM tbl_servico";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+// metodo de buscar todos os servicos por categoria
+    function buscarServicosPorCategoria($categoria){
+        $sql = "SELECT * FROM tbl_servico where id_categoria = :categoria and excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':usuario', $categoria); 
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+// metodo de buscar todos os servicos inativos   
+function buscarServicosInativos(){
+        $sql = "SELECT * FROM tbl_servico where excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+// metodo de buscar todos os servicos por ID
+    function buscarServicosPorId($db,$id){
+    $sql = 'SELECT nome_usuario, email_usuario FROM tbl_servico WHERE id_usuario = :id';
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':id', $id);
     return $stmt->execute();
    
 }
+//     $id_servico;
+//     $id_categoria;
+//     $nome_servico;
+//     $descricao_servico;
+//     $valor_servico;
+//     $foto_servico;
+//     $status_servico;
+//     $criado_em;
+//     $atualizado_em;
+//     $excluido_em;
+// --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
-    // metodo de buscar todos usuario por email
-    function buscarUsuariosPorEMail($email){
-        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':email', $email); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    function buscarUsuariosPorEMailInativo($email){
-        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':email', $email); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-// metodo de inserir usuario create
-    function inserirUsuario(
-        $nome, 
-        $email, 
-        $senha, 
-        $tipo, 
-        $status){
+// metodo de registrar usuario // create
+    function registrarServicos($nome, $email, $senha, $tipo, $status){
         $senha = password_hash($senha, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO tbl_usuario (nome_usuario, email_usuario, 
+        $sql = "INSERT INTO tbl_servico (nome_usuario, email_usuario, 
         senha_usuario, tipo_usuario, status_usuario) 
                 VALUES (:nome, :email, :senha, :tipo, :status)";
         $stmt = $this->db->prepare($sql);
@@ -82,11 +98,11 @@ function buscarUsuariosInativos(){
             return false;
         }
     }
+
   // metodo de atualizar o usuario // update
-    function atualizarUsuario($id, $nome, $email, $senha, $tipo, $status){
-        $senha = password_hash($senha, PASSWORD_DEFAULT);
+    function atualizarServicos($id, $nome, $email, $senha, $tipo, $status){
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_usuario SET nome_usuario = :nome,
+        $sql = "UPDATE tbl_servico SET nome_usuario = :nome,
          email_usuario = :email, 
          senha_usuario = :senha, 
          tipo_usuario = :tipo,
@@ -107,10 +123,10 @@ function buscarUsuariosInativos(){
             return false;
         }
     }
-    // metodo de inativar o usuario // delete
-    function excluirUsuario($id){
+    // metodo de inativar o servico // delete
+    function inativarServicos($id){
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
+        $sql = "UPDATE tbl_servico SET excluido_em = :atual WHERE id_servico = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);
@@ -120,12 +136,12 @@ function buscarUsuariosInativos(){
             return false;
         }
     }
-// metodo de ativar o usuario excluido
-    function ativarUsuario($id){
+// metodo de ativar o servico excluido
+    function ativarServicosExcluido($id){
         $dataatual = NULL;
-        $sql = "UPDATE tbl_usuario SET
+        $sql = "UPDATE tbl_servico SET
          excluido_em = :atual
-         WHERE id_usuario = :id";
+         WHERE id_servico = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);

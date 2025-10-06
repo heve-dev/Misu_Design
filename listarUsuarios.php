@@ -2,7 +2,11 @@
 include_once 'backend/Database/Database.php';
 include_once 'backend/Model/Usuario.php';
 
+use App\Misu\Model\Usuario;
+
 $resultado = buscarUsuarios($db);
+
+
 
 // loop - para-for
 // for ($i=0; $i < count($resultado); $i++){ 
@@ -26,7 +30,7 @@ $resultado = buscarUsuarios($db);
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
