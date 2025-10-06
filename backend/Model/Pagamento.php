@@ -4,18 +4,14 @@ namespace App\Misu\Model;
 
 use PDO;
 
-$usuario = new Usuario($db);
-$pagamento = new Pagamento($db);
-
 
 /* Executa uma instrução preparada passando um array de valores */
 class Pagamento{
     private $id_pagamento;
-    private $nome_pagamento;
-    private $email_pagamento;
-    private $tipo_pagamento;
-    private $senha_pagamento;
+    private $id_cliente;
+    private $total_devedor;
     private $status_pagamento;
+    private $data_pagamento;
     private $criado_em;
     private $atualizado_em;
     private $excluido_em;

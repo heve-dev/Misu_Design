@@ -3,6 +3,8 @@ namespace App\Misu\Model;
 
 use PDO;
 
+
+
 /* Executa uma instrução preparada passando um array de valores */
 class Usuario{
     private $id_perfil_usuario;

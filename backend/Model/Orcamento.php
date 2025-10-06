@@ -4,17 +4,15 @@ namespace App\Misu\Model;
 
 use PDO;
 
-$usuario = new Usuario($db);
-$orcamento = new Orcamento($db);
-
 /* Executa uma instrução preparada passando um array de valores */
 class Orcamento{
     private $id_orcamento;
-    private $nome_orcamento;
-    private $email_orcamento;
-    private $tipo_orcamento;
-    private $senha_orcamento;
+    private $id_cliente;
+    private $id_categoria;
+    private $id_pagamento;
+    private $descricao_orcamento;
     private $status_orcamento;
+    private $data_orcamento;
     private $criado_em;
     private $atualizado_em;
     private $excluido_em;
