@@ -40,7 +40,7 @@ class Agendamento{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 // metodo de buscar todos os agendamentos por Servico
-    function buscarAgendamentoPorServico($servico){
+    function buscarAgendamentoPorServico($id_servico){
         $sql = "SELECT * FROM tbl_agendamento where id_servico = :id_servico and excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id_servico', $id_servico); 
