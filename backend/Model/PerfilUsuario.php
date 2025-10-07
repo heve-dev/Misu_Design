@@ -85,20 +85,27 @@ class Usuario{
 
 // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
- 
+   //  $id_perfil_usuario;
+    //  $id_usuario;
+    //  $descricao_perfil_usuario;
+    //  $foto_perfil_usuario;
+    //  $banner_perfil_usuario;
+    //  $criado_em;
+    //  $atualizado_em;
+    //  $excluido_em;
+
 
 // metodo de registrar PerfilUsuario
 
-function registrarPerfilUsuario($db, $data_solicitada, $total_agendamento, $status_agendamento){
-    $sql = 'INSERT INTO tbl_perfil_usuario (data_solicitada, total_agendamento, status_agendamento)
-    VALUES (:data_solicitada, :total_agendamento, :status_agendamento)';
+function registrarPerfilUsuario($db, $descricao_perfil_usuario, $banner_perfil_usuario, $foto_perfil_usuario){
+    $sql = 'INSERT INTO tbl_perfil_usuario (foto_perfil_usuario, descricao_perfil_usuario, banner_perfil_usuario)';
     $stmt = $db->prepare($sql);
-    $stmt->bindParam(':data_solicitada', $data_solicitada);
-    $stmt->bindParam(':total_agendamento', $total_agendamento);
-    $stmt->bindParam(':status_agendamento', $status_agendamento);
+    $stmt->bindParam(':foto_perfil_usuario', $foto_perfil_usuario );
+    $stmt->bindParam(':descricao_perfil_usuario', $descricao_perfil_usuario);
+    $stmt->bindParam(':banner_perfil_usuario', $banner_perfil_usuario);
     if($stmt->execute()){
         return $this->db->lastInsertId();
-        } else {
+        } else {   
             return false;
         }
     }

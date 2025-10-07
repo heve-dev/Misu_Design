@@ -1,4 +1,4 @@
-<div>Sou o create</div>
+<div>Sou o edit</div>
  
 <form action="/backend/usuario/atualizar/<?php echo $usuario['id_usuario']; ?>" method="post" enctype="multipart/form-data">
     <label for="Nome">Nome</label>

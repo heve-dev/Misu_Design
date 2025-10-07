@@ -6,13 +6,38 @@ use App\Misu\Database\Database;
 use App\Misu\Core\View;
 use App\Misu\Core\Redirect;
 use App\Misu\Validadores\UsuarioValidador;
+use App\Misu\Core\FileManager;
 
 class UsuarioController {
     public $usuario;
     public $db;
+    public $gerenciarImagem;
+
     public function __construct() {
         $this->db = Database::getInstance();
         $this->usuario = new Usuario($this->db);
+        $this->gerenciarImagem = new FileManager('upload');
+    }
+    public function salvarUsuarios() {
+       $erros = UsuarioValidador::ValidarEntradas($_POST);
+       if(!empty($erros)){
+            Redirect::redirecionarComMensagem("usuario/criar","error", implode("<br>", $erros));
+       }
+       //novo caminho
+        $imagem = $this->gerenciarImagem->salvarArquivo($_FILES['imagem'], 'usuario');
+        if($this->usuario->registrarUsuarios(
+            $_POST["nome_usuario"],
+            $_POST["email_usuario"],
+            $_POST["senha_usuario"],
+            $_POST["tipo_usuario"],
+            "Ativo",
+            $imagem
+        )){
+            Redirect::redirecionarComMensagem("usuario/listar","success","Usuário cadastrado com sucesso!");
+        }else{
+            Redirect::redirecionarComMensagem("usuario/criar","error","Erro ao cadastrar usuário!");
+        }
+        
     }
 
      // método - index
@@ -35,6 +60,7 @@ class UsuarioController {
     }
     public function viewEditarUsuario($id) {
         $dados = $this->usuario->buscarUsuariosPorId($id);
+        var_dump($dados);
         View::render("usuario/edit", ["id_usuario"=> $dados ]);
         
     }
@@ -43,27 +69,12 @@ class UsuarioController {
         
     }
     public function relatorioUsuario($id, $data_inicio, $data_fim) {
-        View::render("usuario/details", ["id"=> $id ]);
+        View::render("usuario/details", 
+        
+        ["id"=> $id, "data_inicio"=> $data_inicio, "data_fim"=> $data_fim]);
     }
 // ---
-    public function salvarUsuarios() {
-       $erros = UsuarioValidador::ValidarEntradas($_POST);
-       if(!empty($erros)){
-            Redirect::redirecionarComMensagem("usuario/criar","error", implode("<br>", $erros));
-       }
-        if($this->usuario->registrarUsuarios(
-            $_POST["nome_usuario"],
-            $_POST["email_usuario"],
-            $_POST["senha_usuario"],
-            $_POST["tipo_usuario"],
-            "Ativo"
-        )){
-            Redirect::redirecionarComMensagem("usuario/listar","success","Usuário cadastrado com sucesso!");
-        }else{
-            Redirect::redirecionarComMensagem("usuario/criar","error","Erro ao cadastrar usuário!");
-        }
-        
-    }
+
     public function atualizarUsuarios() {
         echo "atualizar Usuarios";
         

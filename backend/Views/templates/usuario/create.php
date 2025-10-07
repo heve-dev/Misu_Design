@@ -1,6 +1,6 @@
 <div>Sou o create</div>
  
-<form action="/backend/usuario/atualizar/<?php echo $usuario['id_usuario']; ?>" method="post" enctype="multipart/form-data">
+<form action="/backend/usuario/salvar" method="post" enctype="multipart/form-data">
     <label for="Nome">Nome</label>
     <input type="text" name="nome_usuario" id="nome_usuario"  required>
     <br>
