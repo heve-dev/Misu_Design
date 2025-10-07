@@ -1,8 +1,8 @@
 <div>Sou o create</div>
- o action é pra onde o form vai ser enviado 
-<form action="/backend/usuario/salvar" method="post">
+ 
+<form action="/backend/usuario/atualizar/<?php echo $usuario['id_usuario']; ?>" method="post" enctype="multipart/form-data">
     <label for="Nome">Nome</label>
-    <input type="text" name="nome_usuario" id="nome_usuario" required>
+    <input type="text" name="nome_usuario" id="nome_usuario"  required>
     <br>
     <label for="Email">Email</label>
     <input type="email" name="email_usuario" id="email_usuario" required>
@@ -14,6 +14,11 @@
     <select name="tipo_usuario" id="tipo_usuario" required>
         <option value="admin">Admin</option>
         <option value="usuario">Usuário</option>
+<select>
+    <br>
+    <label for="imagem">Imagem</label>
+    <input type="file" name="imagem" id="imagem" accept="image/*">
+
     <button type="submit">Salvar</button>
 
 </form>
