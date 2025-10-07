@@ -1,1 +1,1 @@
-<div>Sou o edit</div>
+<div>Sou o edit e o usuario na URL é : <?php echo $id_usuario; ?></div>

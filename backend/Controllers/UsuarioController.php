@@ -17,7 +17,7 @@ class UsuarioController {
 
      // método - index
     public function index() {
-        $resultado = $this->usuario->buscarUsuario();
+        $resultado = $this->usuario->buscarUsuarios();
         var_dump ($resultado);
 }
 
@@ -25,7 +25,7 @@ class UsuarioController {
 //30.09
   //raiz do array
    public function viewListarUsuarios(){
-        $dados = $this->usuario->buscarUsuario();
+        $dados = $this->usuario->buscarUsuarios();
         View::render("usuario/index", ["usuarios"=> $dados] );
     }
 //---  VIEWS
@@ -33,22 +33,24 @@ class UsuarioController {
         View::render("usuario/create");
         
     }
-    public function viewEditarUsuario() {
-        View::render("usuario/edit");
+    public function viewEditarUsuario($id) {
+        View::render("usuario/edit", ["id_usuario"=> $id ]);
         
     }
-    public function viewExcluirUsuario() {
-        View::render("usuario/delete");
+    public function viewExcluirUsuario($id) {
+        View::render("usuario/delete", ["id_usuario"=> $id ]);
         
     }
-
+    public function relatorioUsuario($id, $data_inicio, $data_fim) {
+        View::render("usuario/details", ["id"=> $id ]);
+    }
 // ---
-    public function salvarUsuario() {
+    public function salvarUsuarios() {
        $erros = UsuarioValidador::ValidarEntradas($_POST);
        if(!empty($erros)){
             Redirect::redirecionarComMensagem("usuario/criar","error", implode("<br>", $erros));
        }
-        if($this->usuario->inserirUsuario(
+        if($this->usuario->registrarUsuarios(
             $_POST["nome_usuario"],
             $_POST["email_usuario"],
             $_POST["senha_usuario"],
