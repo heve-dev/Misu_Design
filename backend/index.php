@@ -5,8 +5,8 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Bramus\Router\Router;
 $router = new Router();
 $router->setNamespace('App\Misu\Controllers');
-
-use App\Misu\Rotas\Rotas;
+//   puxa o GET e POST do rotas.php 
+use App\Misu\Rotas\Rotas;//rota=URL
 $rotas = Rotas::get();
 
 foreach ($rotas as $metodoHttp => $rota) {

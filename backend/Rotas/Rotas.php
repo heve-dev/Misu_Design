@@ -76,6 +76,11 @@ class Rotas
                 "/backend/itemAgendamento/editar" => "ItemAgendamentoController@viewEditarItemAgendamento",
                 "/backend/itemAgendamento/excluir" => "ItemAgendamentoController@viewExcluirItemAgendamento",
 
+                // Relatórios
+                
+                "/usuario/{id}/relatorio/{dataInicial}/{dataFinal}" => "UsuarioController@relatorioIsuario",
+
+
     ],
     
     // POST POST POST POST
