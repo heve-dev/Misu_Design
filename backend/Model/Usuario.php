@@ -38,9 +38,9 @@ function buscarUsuariosInativos(){
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 // metodo de buscar todos os usuarios por ID
-    function buscarUsuariosPorId($db,$id){
+    function buscarUsuariosPorId($id){
     $sql = 'SELECT * FROM tbl_usuario WHERE id_usuario = :id_usuario'and 'excluido_em IS NULL';
-    $stmt = $db->prepare($sql);
+    $stmt = $this->db->prepare($sql);
     $stmt->bindParam(':id_usuario', $id);
     return $stmt->execute();
    
