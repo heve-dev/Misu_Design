@@ -41,9 +41,9 @@ class Agendamento{
     }
 // metodo de buscar todos os agendamentos por Servico
     function buscarAgendamentoPorServico($servico){
-        $sql = "SELECT * FROM tbl_agendamento where id_servico = :servico and excluido_em IS NULL";
+        $sql = "SELECT * FROM tbl_agendamento where id_servico = :id_servico and excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':servico', $servico); 
+        $stmt->bindParam(':id_servico', $id_servico); 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -98,11 +98,11 @@ class Agendamento{
 
 function registrarAgendamento($db, $data_solicitada, $total_agendamento, $status_agendamento){
     $sql = 'INSERT INTO tbl_agendamento (data_solicitada, total_agendamento, status_agendamento)
-    VALUES (:data_solicitada, :total_agendamento, :status_agendamento)';
+    VALUES (:data, :total, :status)';
     $stmt = $db->prepare($sql);
-    $stmt->bindParam(':data_solicitada', $data_solicitada);
-    $stmt->bindParam(':total_agendamento', $total_agendamento);
-    $stmt->bindParam(':status_agendamento', $status_agendamento);
+    $stmt->bindParam(':data', $data_solicitada);
+    $stmt->bindParam(':total', $total_agendamento);
+    $stmt->bindParam(':status', $status_agendamento);
     if($stmt->execute()){
         return $this->db->lastInsertId();
         } else {
@@ -113,12 +113,8 @@ function registrarAgendamento($db, $data_solicitada, $total_agendamento, $status
   // metodo de atualizar o usuario // update
     function atualizarAgendamento($id, $data_solicitada, $status_agendamento, $total_agendamento){
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_agendamento SET data_solicitada = :data_solicitada,
-         email_agendamento = :email, 
-         total_agendamento = :total_agendamento, 
-         status_agendamento = :status,
-         atualizado_em = :atual
-         WHERE id_agendamento = :id";
+        $sql = "UPDATE tbl_agendamento SET data_solicitada = :data, total_agendamento = :total, atualizado_em = :atual
+        WHERE id_agendamento = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':data_solicitada', $data_solicitada);

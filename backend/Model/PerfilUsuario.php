@@ -33,10 +33,10 @@ class Usuario{
     //  $excluido_em;
 
  // metodo de buscar todos os Perfil Usuario
-    function buscarPerfilUsuario($db){
+    function buscarPerfilUsuario(){
         $sql = "SELECT * FROM tbl_perfil_usuario";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute($db);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 // metodo de buscar todos os Perfil Usuario por usuario
@@ -74,9 +74,9 @@ class Usuario{
     }
 
     // metodo de buscar PerfilUsuario por ID
-    function buscarPerfilUsuarioPorID($db,$id){
+    function buscarPerfilUsuarioPorID($id){
         $sql = 'SELECT id_agendamento FROM tbl_perfil_usuario WHERE id_agendamento = :id';
-        $stmt = $db->prepare($sql);
+        $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         return $stmt->execute();
     }
@@ -97,12 +97,13 @@ class Usuario{
 
 // metodo de registrar PerfilUsuario
 
-function registrarPerfilUsuario($db, $descricao_perfil_usuario, $banner_perfil_usuario, $foto_perfil_usuario){
-    $sql = 'INSERT INTO tbl_perfil_usuario (foto_perfil_usuario, descricao_perfil_usuario, banner_perfil_usuario)';
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':foto_perfil_usuario', $foto_perfil_usuario );
-    $stmt->bindParam(':descricao_perfil_usuario', $descricao_perfil_usuario);
-    $stmt->bindParam(':banner_perfil_usuario', $banner_perfil_usuario);
+function registrarPerfilUsuario($descricao_perfil_usuario, $banner_perfil_usuario, $foto_perfil_usuario){
+    $sql = 'INSERT INTO tbl_perfil_usuario (foto_perfil_usuario, descricao_perfil_usuario, banner_perfil_usuario)
+    VALUES (:foto, :descricao, :banner)';
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':foto', $foto_perfil_usuario );
+    $stmt->bindParam(':descricao', $descricao_perfil_usuario);
+    $stmt->bindParam(':banner', $banner_perfil_usuario);
     if($stmt->execute()){
         return $this->db->lastInsertId();
         } else {   
