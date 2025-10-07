@@ -34,7 +34,8 @@ class UsuarioController {
         
     }
     public function viewEditarUsuario($id) {
-        View::render("usuario/edit", ["id_usuario"=> $id ]);
+        $dados = $this->usuario->buscarUsuariosPorId($id);
+        View::render("usuario/edit", ["id_usuario"=> $dados ]);
         
     }
     public function viewExcluirUsuario($id) {

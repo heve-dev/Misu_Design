@@ -11,6 +11,7 @@ $rotas = Rotas::get();
 
 foreach ($rotas as $metodoHttp => $rota) {
     foreach ($rota as $uri => $acao) {
+        $metodoBramus = strtolower($metodoHttp);
         $router->{$metodoBramus}($uri, $acao); // a mágica acontece aqui
     }
 }

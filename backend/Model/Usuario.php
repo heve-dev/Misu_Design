@@ -39,9 +39,9 @@ function buscarUsuariosInativos(){
     }
 // metodo de buscar todos os usuarios por ID
     function buscarUsuariosPorId($db,$id){
-    $sql = 'SELECT nome_usuario, email_usuario FROM tbl_usuario WHERE id_usuario = :id';
+    $sql = 'SELECT * FROM tbl_usuario WHERE id_usuario = :id_usuario'and 'excluido_em IS NULL';
     $stmt = $db->prepare($sql);
-    $stmt->bindParam(':id', $id);
+    $stmt->bindParam(':id_usuario', $id);
     return $stmt->execute();
    
 }
