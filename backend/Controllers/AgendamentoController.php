@@ -17,7 +17,7 @@ class UsuarioController {
 
      // método - index
     public function index() {
-        $resultado = $this->usuario->buscarUsuario();
+        $resultado = $this->usuario->buscarUsuarios();
         var_dump ($resultado);
 }
 
@@ -25,10 +25,14 @@ class UsuarioController {
 //30.09
   //raiz do array
    public function viewListarUsuarios(){
-        $dados = $this->usuario->buscarUsuario();
+        $dados = $this->usuario->buscarUsuarios();
         View::render("usuario/index", ["usuarios"=> $dados] );
     }
 //---  VIEWS
+
+//mostram a saida de dados no dash
+
+
     public function viewCriarUsuario() {
         View::render("usuario/create");
         
@@ -48,7 +52,7 @@ class UsuarioController {
        if(!empty($erros)){
             Redirect::redirecionarComMensagem("usuario/criar","error", implode("<br>", $erros));
        }
-        if($this->usuario->inserirUsuario(
+        if($this->usuario->registrarUsuarios(
             $_POST["nome_usuario"],
             $_POST["email_usuario"],
             $_POST["senha_usuario"],

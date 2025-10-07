@@ -32,10 +32,10 @@ class Agendamento{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 // metodo de buscar todos os agendamentos por usuario
-    function buscarAgendamentoPorUsuario($usuario){
-        $sql = "SELECT * FROM tbl_agendamento where id_cliente = :usuario and excluido_em IS NULL";
+    function buscarAgendamentoPorUsuario($id_usuario){
+        $sql = "SELECT * FROM tbl_agendamento where id_cliente = :id_usuario and excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':usuario', $usuario); 
+        $stmt->bindParam(':id_usuario', $id_usuario); 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
