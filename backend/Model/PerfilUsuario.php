@@ -6,7 +6,7 @@ use PDO;
 
 
 /* Executa uma instrução preparada passando um array de valores */
-class Usuario{
+class PerfilUsuario{
     private $id_perfil_usuario;
     private $id_usuario;
     private $descricao_perfil_usuario;
@@ -32,59 +32,64 @@ class Usuario{
     //  $atualizado_em;
     //  $excluido_em;
 
- // metodo de buscar todos os Perfil Usuario
-    function buscarPerfilUsuario(){
-        $sql = "SELECT * FROM tbl_perfil_usuario";
+    // Buscar todos os perfis ativos
+    function buscarPerfisAtivos() {
+        $sql = "SELECT * FROM tbl_perfil_usuario WHERE excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-// metodo de buscar todos os Perfil Usuario por usuario
-    function buscarPerfilUsuarioPorUsuario($usuario){
-        $sql = "SELECT * FROM tbl_perfil_usuario where id_cliente = :usuario and excluido_em IS NULL";
+
+    // Buscar perfis inativos
+    function buscarPerfisInativos($status) {
+        $sql = "SELECT * FROM tbl_perfil_usuario WHERE status_perfil_usuario = 'inativo' 
+            AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':usuario', $usuario); 
+         $stmt->bindParam(':status', $status);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Buscar perfil por ID
+    function buscarPerfisPorId($id) {
+        $sql = "SELECT * FROM tbl_perfil_usuario WHERE id_perfil_usuario = :id AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Buscar perfil por ID de usuário
+    function buscarPerfisPorUsuario($id_usuario) {
+        $sql = "SELECT * FROM tbl_perfil_usuario WHERE id_usuario = :id_usuario AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
 // metodo de buscar todos os Perfil Usuario por data
-    function buscarPerfilUsuarioPorCriacao($criado_em){
+    function buscarPerfisUsuarioPorCriacao($criado_em){
         $sql = "SELECT * FROM tbl_perfil_usuario where criado_em = :criado_em and excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':criado_em', $criado_em); 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
+//     // Buscar perfil por Status
+//     public function buscarPerfisPorStatus($status) {
+//     $sql = "SELECT * FROM tbl_perfil_usuario WHERE status_perfil_usuario = :status AND excluido_em IS NULL";
+//     $stmt = $this->db->prepare($sql);
+//     $stmt->bindParam(':status', $status);
+//     $stmt->execute();
+//     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+// }
+
+
     
-    // metodo de buscar todos os Perfil Usuario por status
-     function buscarPerfilUsuarioPorStatus($status_agendamento){
-        $sql = "SELECT * FROM tbl_perfil_usuario where status_agendamento = :status_agendamento and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':status_agendamento', $status_agendamento); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // Perfil Usuario inativos
-    function buscarTodosPerfilUsuarioInativos(){
-        $sql = "SELECT * FROM tbl_perfil_usuario where excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // metodo de buscar PerfilUsuario por ID
-    function buscarPerfilUsuarioPorID($id){
-        $sql = 'SELECT id_agendamento FROM tbl_perfil_usuario WHERE id_agendamento = :id';
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
-    }
-
-
-
-// --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
-
    //  $id_perfil_usuario;
     //  $id_usuario;
     //  $descricao_perfil_usuario;
@@ -95,18 +100,26 @@ class Usuario{
     //  $excluido_em;
 
 
-// metodo de registrar PerfilUsuario
+  
 
-function registrarPerfilUsuario($descricao_perfil_usuario, $banner_perfil_usuario, $foto_perfil_usuario){
-    $sql = 'INSERT INTO tbl_perfil_usuario (foto_perfil_usuario, descricao_perfil_usuario, banner_perfil_usuario)
-    VALUES (:foto, :descricao, :banner)';
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':foto', $foto_perfil_usuario );
-    $stmt->bindParam(':descricao', $descricao_perfil_usuario);
-    $stmt->bindParam(':banner', $banner_perfil_usuario);
-    if($stmt->execute()){
-        return $this->db->lastInsertId();
-        } else {   
+
+// --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
+
+       // Registrar novo perfil de usuário
+    function registrarPerfis($id_usuario, $descricao, $foto, $banner) {
+        $sql = "INSERT INTO tbl_perfil_usuario 
+        (id_usuario, descricao_perfil_usuario, foto_perfil_usuario, banner_perfil_usuario)
+        VALUES (:id_usuario, :descricao, :foto, :banner)";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->bindParam(':descricao', $descricao);
+        $stmt->bindParam(':foto', $foto);
+        $stmt->bindParam(':banner', $banner);
+
+        if ($stmt->execute()) {
+            return $this->db->lastInsertId();
+        } else {
             return false;
         }
     }
@@ -162,3 +175,52 @@ function ativarPerfilUsuarioExcluido($id){
 }
 
 }
+
+
+------------------------------------------------------------------------
+
+
+   
+
+    // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
+
+ 
+
+    // Atualizar perfil existente
+    function atualizarPerfil($id, $descricao, $foto, $banner) {
+        $dataatual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_perfil_usuario 
+                SET descricao_perfil_usuario = :descricao,
+                    foto_perfil_usuario = :foto,
+                    banner_perfil_usuario = :banner,
+                    atualizado_em = :atual
+                WHERE id_perfil_usuario = :id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':descricao', $descricao);
+        $stmt->bindParam(':foto', $foto);
+        $stmt->bindParam(':banner', $banner);
+        $stmt->bindParam(':atual', $dataatual);
+        
+        return $stmt->execute();
+    }
+
+    // Inativar perfil (soft delete)
+    function inativarPerfil($id) {
+        $dataatual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_perfil_usuario SET excluido_em = :atual WHERE id_perfil_usuario = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':atual', $dataatual);
+        return $stmt->execute();
+    }
+
+    // Reativar perfil inativo
+    function ativarPerfil($id) {
+        $sql = "UPDATE tbl_perfil_usuario SET excluido_em = NULL WHERE id_perfil_usuario = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+

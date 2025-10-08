@@ -21,112 +21,127 @@ class Usuario{
         $this->db = $db;
     }
 
+
 // --------------- MÉTODOS DE BUSCA DE DADOS ---------------
 
- // metodo de buscar todos os usuarios
-    function buscarUsuarios(){
-        $sql = "SELECT * FROM tbl_usuario";
+    // Buscar todos os usuários ativos
+    function buscarUsuarios() {
+        $sql = "SELECT * FROM tbl_usuario WHERE excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-// metodo de buscar todos os usuarios inativos   
-function buscarUsuariosInativos(){
-        $sql = "SELECT * FROM tbl_usuario where excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-// metodo de buscar todos os usuarios por ID
-    function buscarUsuariosPorId($id){
-    $sql = 'SELECT * FROM tbl_usuario WHERE id_usuario = :id_usuario'and 'excluido_em IS NULL';
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':id_usuario', $id);
-    return $stmt->execute();
-   
-}
 
-    // metodo de buscar todos usuario por email
-    function buscarUsuariosPorEMail($email){
-        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NULL";
+    // Buscar todos os usuários inativos
+    function buscarUsuariosInativos() {
+        $sql = "SELECT * FROM tbl_usuario WHERE excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':email', $email); 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    function buscarUsuariosPorEMailInativo($email){
-        $sql = "SELECT * FROM tbl_usuario where email_usuario = :email and excluido_em IS NOT NULL";
+
+    // Buscar usuário por ID
+    function buscarUsuariosPorId($id) {
+        $sql = "SELECT * FROM tbl_usuario WHERE id_usuario = :id AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':email', $email); 
+        $stmt->bindParam(':id', $id);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Buscar usuário por e-mail (ativo)
+    function buscarUsuariosPorEmail($email) {
+        $sql = "SELECT * FROM tbl_usuario WHERE email_usuario = :email AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Buscar usuário por e-mail (inativo)
+    function buscarUsuariosPorEmailInativo($email) {
+        $sql = "SELECT * FROM tbl_usuario WHERE email_usuario = :email AND excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
 
 // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
-// metodo de registrar usuario // create
-    function registrarUsuarios($nome, $email, $senha, $tipo, $status){
-        $senha = password_hash($senha, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO tbl_usuario (nome_usuario, email_usuario, 
-        senha_usuario, tipo_usuario, status_usuario) 
-                VALUES (:nome, :email, :senha, :tipo, :status)";
+    // Registrar novo usuário / create
+    function registrarUsuarios($nome, $email, $senha, $tipo, $status) {
+        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO tbl_usuario 
+        (nome_usuario, email_usuario, senha_usuario, tipo_usuario, status_usuario) 
+        VALUES (:nome, :email, :senha, :tipo, :status)";
+
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':senha', $senhaHash);
         $stmt->bindParam(':tipo', $tipo);
         $stmt->bindParam(':status', $status);
-        if($stmt->execute()){
+
+        if ($stmt->execute()) {
             return $this->db->lastInsertId();
-        }else{
+        } else {
             return false;
         }
     }
 
-  // metodo de atualizar o usuario // update
-    function atualizarUsuarios($id, $nome, $email, $senha, $tipo, $status){
-        $senha = password_hash($senha, PASSWORD_DEFAULT);
+    // Atualizar dados de um usuário existente / update
+    function atualizarUsuarios($id, $nome, $email, $senha, $tipo, $status) {
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_usuario SET nome_usuario = :nome,
-         email_usuario = :email, 
-         senha_usuario = :senha, 
-         tipo_usuario = :tipo,
-         status_usuario = :status,
-         atualizado_em = :atual
-         WHERE id_usuario = :id";
+        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
+        $sql = "UPDATE tbl_usuario SET 
+                    nome_usuario = :nome,
+                    email_usuario = :email,
+                    senha_usuario = :senha,
+                    tipo_usuario = :tipo,
+                    status_usuario = :status,
+                    atualizado_em = :atual
+                WHERE id_usuario = :id";
+
         $stmt = $this->db->prepare($sql);
+
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senha);
+        $stmt->bindParam(':senha', $senhaHash);
         $stmt->bindParam(':tipo', $tipo);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':atual', $dataatual);
+
         if($stmt->execute()){
             return true;
         }else{
             return false;
         }
     }
-    // metodo de inativar o usuario // delete
-    function inativarUsuarios($id){
+
+    // Inativar usuário (soft delete)
+    function inativarUsuarios($id) {
         $dataatual = date('Y-m-d H:i:s');
         $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);
-        if($stmt->execute()){
+         if($stmt->execute()){
             return true;
         }else{
             return false;
         }
     }
-// metodo de ativar o usuario excluido
-    function ativarUsuariosExcluidos($id){
-        $dataatual = NULL;
-        $sql = "UPDATE tbl_usuario SET
-         excluido_em = :atual
-         WHERE id_usuario = :id";
+
+    // Reativar usuário inativo
+    function ativarUsuarios($id) {
+         $dataatual = NULL;
+        $sql = "UPDATE tbl_usuario SET excluido_em = NULL WHERE id_usuario = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);

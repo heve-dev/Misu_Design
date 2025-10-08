@@ -19,55 +19,64 @@ class Servico{
     private $criado_em;
     private $atualizado_em;
     private $excluido_em;
-    private  $db;
+    private $db;
 
- // contrutor inicializa a classe e ou atributos
+ // contrutor inicializa a classe e ou atributos / inicializa a conexão com o banco
   public function __construct($db){
         $this->db = $db;
     }
 
 // --------------- MÉTODOS DE BUSCA DE DADOS ---------------
 
- // metodo de buscar todos os servicos
-    function buscarTodosServicos(){
-        $sql = "SELECT * FROM tbl_servico";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // metodo de buscar todos os servicos
+// Buscar todos os serviços ativos
     function buscarServicos(){
-        $sql = "SELECT * FROM tbl_servico";
+        $sql = "SELECT * FROM tbl_servico WHERE excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-// metodo de buscar todos os servicos por categoria
-    function buscarServicosPorCategoria($categoria){
-        $sql = "SELECT * FROM tbl_servico where id_categoria = :categoria and excluido_em IS NULL";
+// Buscar todos os serviços inativos
+    function buscarServicosInativos(){
+        $sql = "SELECT * FROM tbl_servico WHERE excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':usuario', $categoria); 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-// metodo de buscar todos os servicos inativos   
-function buscarServicosInativos(){
-        $sql = "SELECT * FROM tbl_servico where excluido_em IS NOT NULL";
+    
+
+// Buscar serviço por ID
+    function buscarServicosPorId($id){
+        $sql = "SELECT * FROM tbl_servico WHERE id_servico = :id AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    
+    // Buscar serviço por nome
+    function buscarServicosPorNome($nome){
+        $sql = "SELECT * FROM tbl_servico WHERE nome_servico LIKE :nome AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $nome = "%$nome%";
+        $stmt->bindParam(':nome', $nome);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-// metodo de buscar todos os servicos por ID
-    function buscarServicosPorId($db,$id){
-    $sql = 'SELECT nome_usuario, email_usuario FROM tbl_servico WHERE id_usuario = :id';
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':id', $id);
-    return $stmt->execute();
-   
-}
+
+    // Buscar serviços por categoria
+    function buscarServicosPorCategoria($id_categoria){
+        $sql = "SELECT * FROM tbl_servico WHERE id_categoria = :id_categoria AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_categoria', $id_categoria);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+
 //     $id_servico;
 //     $id_categoria;
 //     $nome_servico;
@@ -78,43 +87,52 @@ function buscarServicosInativos(){
 //     $criado_em;
 //     $atualizado_em;
 //     $excluido_em;
+
 // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
-// metodo de registrar usuario // create
-    function registrarServicos($nome, $email, $senha, $tipo, $status){
-        $senha = password_hash($senha, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO tbl_servico (nome_usuario, email_usuario, 
-        senha_usuario, tipo_usuario, status_usuario) 
-                VALUES (:nome, :email, :senha, :tipo, :status)";
+
+        // Registrar novo serviço / create
+    function registrarServicos($id_categoria, $nome, $descricao, $valor, $foto, $status){
+        $sql = "INSERT INTO tbl_servico 
+        (id_categoria, nome_servico, descricao_servico, valor_servico, foto_servico, status_servico) 
+        VALUES (:id_categoria, :nome, :descricao, :valor, :foto, :status)";
+        
         $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_categoria', $id_categoria);
         $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senha);
-        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':descricao', $descricao);
+        $stmt->bindParam(':valor', $valor);
+        $stmt->bindParam(':foto', $foto);
         $stmt->bindParam(':status', $status);
+        
         if($stmt->execute()){
             return $this->db->lastInsertId();
-        }else{
+        } else {
             return false;
         }
     }
 
-  // metodo de atualizar o usuario // update
-    function atualizarServicos($id, $nome, $email, $senha, $tipo, $status){
+
+    // Atualizar serviço existente / update
+    function atualizarServicos($id, $id_categoria, $nome, $descricao, $valor, $foto, $status){
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_servico SET nome_usuario = :nome,
-         email_usuario = :email, 
-         senha_usuario = :senha, 
-         tipo_usuario = :tipo,
-         status_usuario = :status,
-         atualizado_em = :atual
-         WHERE id_usuario = :id";
+        $sql = "UPDATE tbl_servico 
+                SET id_categoria = :id_categoria,
+                    nome_servico = :nome,
+                    descricao_servico = :descricao,
+                    valor_servico = :valor,
+                    foto_servico = :foto,
+                    status_servico = :status,
+                    atualizado_em = :atual
+                WHERE id_servico = :id";
+        
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':id_categoria', $id_categoria);
         $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':senha', $senha);
-        $stmt->bindParam(':tipo', $tipo);
+        $stmt->bindParam(':descricao', $descricao);
+        $stmt->bindParam(':valor', $valor);
+        $stmt->bindParam(':foto', $foto);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':atual', $dataatual);
         if($stmt->execute()){
@@ -123,7 +141,9 @@ function buscarServicosInativos(){
             return false;
         }
     }
-    // metodo de inativar o servico // delete
+
+
+    // Inativar serviço (soft delete)
     function inativarServicos($id){
         $dataatual = date('Y-m-d H:i:s');
         $sql = "UPDATE tbl_servico SET excluido_em = :atual WHERE id_servico = :id";
@@ -136,16 +156,15 @@ function buscarServicosInativos(){
             return false;
         }
     }
-// metodo de ativar o servico excluido
-    function ativarServicosExcluido($id){
+
+    // Reativar serviço inativo
+    function ativarServicos($id){
         $dataatual = NULL;
-        $sql = "UPDATE tbl_servico SET
-         excluido_em = :atual
-         WHERE id_servico = :id";
+        $sql = "UPDATE tbl_servico SET excluido_em = NULL WHERE id_servico = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);
-        if($stmt->execute()){
+         if($stmt->execute()){
             return true;
         }else{
             return false;
