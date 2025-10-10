@@ -20,142 +20,103 @@ class Contato{
         $this->db = $db;
     }
 
-// --------------- MÉTODOS DE BUSCA DE DADOS ---------------
+  // ---------------- MÉTODOS DE BUSCA ----------------
 
- // metodo de buscar todos os Contatos
-    function buscarContatos($db){
-        $sql = "SELECT * FROM tbl_contato";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($db);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-// metodo de buscar todos os Contatos por usuario
-    function buscarContatoPorUsuario($usuario){
-        $sql = "SELECT * FROM tbl_contato where id_cliente = :usuario and excluido_em IS NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':usuario', $usuario); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-// metodo de buscar todos os Contatos por Servico
-    function buscarContatoPorServico($servico){
-        $sql = "SELECT * FROM tbl_contato where id_servico = :servico and excluido_em IS NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':servico', $servico); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-// metodo de buscar todos os Contatos por data
-    function buscarContatoPorData($data_solicitada){
-        $sql = "SELECT * FROM tbl_contato where data_solicitada = :data_solicitada and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':data_solicitada', $data_solicitada); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-     // metodo de buscar todos os Contatos pelo Total
-     function buscarContatoPorTotal($total_Contato){
-        $sql = "SELECT * FROM tbl_contato where total_contato = :total_contato and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':total_contato', $total_Contato); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    // metodo de buscar todos os Contatos por status
-     function buscarContatoPorStatus($status_Contato){
-        $sql = "SELECT * FROM tbl_contato where status_contato = :status_contato and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':status_contato', $status_Contato); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // Contatos inativos
-    function buscarTodosContatosInativos(){
-        $sql = "SELECT * FROM tbl_contato where excluido_em IS NOT NULL";
+    // Buscar todos os contatos ativos
+    public function buscarContatosAtivos() {
+        $sql = "SELECT * FROM tbl_contato WHERE excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // metodo de buscar Contato por ID
-    function buscarContatoPorID($db,$id){
-        $sql = 'SELECT id_contato FROM tbl_contato WHERE id_contato = :id';
-        $stmt = $db->prepare($sql);
+    // Buscar contatos excluídos
+    public function buscarContatosExcluidos() {
+        $sql = "SELECT * FROM tbl_contato WHERE excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Buscar contato por ID
+    public function buscarContatoPorId($id) {
+        $sql = "SELECT * FROM tbl_contato 
+                WHERE id_contato = :id 
+                AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Buscar contatos por status (ativo, pendente, resolvido, etc.)
+    public function buscarContatosPorStatus($status) {
+        $sql = "SELECT * FROM tbl_contato 
+                WHERE status_contato = :status 
+                AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':status', $status);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // ---------------- MÉTODOS DE ALTERAÇÃO ----------------
+
+    // Registrar novo contato
+    public function registrarContato($nome, $telefone, $email, $mensagem, $status = 'pendente') {
+        $sql = "INSERT INTO tbl_contato 
+                (nome_contato, telefone_contato, email_contato, mensagem_contato, status_contato)
+                VALUES (:nome, :telefone, :email, :mensagem, :status)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':mensagem', $mensagem);
+        $stmt->bindParam(':status', $status);
         return $stmt->execute();
     }
 
-
-
-// --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
-
- 
-
-// metodo de registrar Contato
-
-function registrarContato($db, $data_solicitada, $total_contato, $status_contato){
-    $sql = 'INSERT INTO tbl_contato (data_solicitada, total_contato, status_Contato)
-    VALUES (:data_solicitada, :total_Contato, :status_Contato)';
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':data_solicitada', $data_solicitada);
-    $stmt->bindParam(':total_Contato', $total_contato);
-    $stmt->bindParam(':status_Contato', $status_contato);
-    if($stmt->execute()){
-        return $this->db->lastInsertId();
-        } else {
-            return false;
-        }
-    }
-     
-  // metodo de atualizar o usuario // update
-    function atualizarContato($id, $data_solicitada, $status_Contato, $total_Contato){
-        $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_contato SET data_solicitada = :data_solicitada,
-         email_Contato = :email, 
-         total_Contato = :total_Contato, 
-         status_Contato = :status,
-         atualizado_em = :atual
-         WHERE id_Contato = :id";
+    // Atualizar contato (ex: marcar como respondido ou alterar dados)
+    public function atualizarContato($id, $nome, $telefone, $email, $mensagem, $status) {
+        $dataAtual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_contato SET 
+                    nome_contato = :nome,
+                    telefone_contato = :telefone,
+                    email_contato = :email,
+                    mensagem_contato = :mensagem,
+                    status_contato = :status,
+                    atualizado_em = :atualizado
+                WHERE id_contato = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':data_solicitada', $data_solicitada);
-        $stmt->bindParam(':total_Contato', $total_Contato);
-        $stmt->bindParam(':status_Contato', $status_Contato);
-        $stmt->bindParam(':atual', $dataatual);
-        if($stmt->execute()){
-            return true;
-        }else{
-            return false;
-        }
+        $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':mensagem', $mensagem);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':atualizado', $dataAtual);
+        return $stmt->execute();
     }
 
-//metodo de inativar o Contato // delete
-function inativarContato($id){
-    $dataatual = date('Y-m-d H:i:s');
-    $sql = "UPDATE tbl_contato SET excluido_em = :atual WHERE id_contato = :id";
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':id', $id);
-    $stmt->bindParam(':atual', $dataatual);
-    if ($stmt->execute()){
-    return true;
-    } else {
-        return false;
-    };
-}
+    // Inativar (exclusão lógica)
+    public function inativarContato($id) {
+        $dataAtual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_contato 
+                SET excluido_em = :excluido 
+                WHERE id_contato = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':excluido', $dataAtual);
+        return $stmt->execute();
+    }
 
-    //metodo de ativar o Contato excluido 
-function ativarContatoExcluido($id){
-    $sql = "UPDATE tbl_contato SET excluido_em = :atual WHERE id_contato = :id";
-     $dataatual = date('Y-m-d H:i:s');
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':id', $id);
-    $stmt->bindParam(':atual', $dataatual);
-    if ($stmt->execute()){
-        return true;
-    } else {
-        return false;
-    };
-}
-
+    // Reativar contato excluído
+    public function ativarContatoExcluido($id) {
+        $sql = "UPDATE tbl_contato 
+                SET excluido_em = NULL 
+                WHERE id_contato = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
 }

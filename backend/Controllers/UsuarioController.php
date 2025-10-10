@@ -37,7 +37,6 @@ class UsuarioController {
         }else{
             Redirect::redirecionarComMensagem("usuario/criar","error","Erro ao cadastrar usuário!");
         }
-        
     }
 
      // método - index
@@ -46,40 +45,58 @@ class UsuarioController {
         var_dump ($resultado);
 }
 
-
-//30.09
   //raiz do array
-   public function viewListarUsuarios(){
-        $dados = $this->usuario->buscarUsuarios();
-        View::render("usuario/index", ["usuarios"=> $dados] );
+   public function viewListarUsuarios($pagina){
+        $dados = $this->usuario->paginacao($pagina);
+        $total = $this->usuario->totalDeUsuarios();
+        View::render("usuario/index", 
+        [
+        "usuarios"=> $dados,
+         "total_usuarios"=> $total[0],
+         "total_inativos" => 22,
+         "Total_ativos" => 12
+        ] 
+        );
     }
+
+
 //---  VIEWS
-    public function viewCriarUsuario() {
+// View Criar---------------
+    public function viewCriarUsuarios() {
         View::render("usuario/create");
         
     }
-    public function viewEditarUsuario($id) {
-        $dados = $this->usuario->buscarUsuariosPorId($id);
-        var_dump($dados);
-        View::render("usuario/edit", ["id_usuario"=> $dados ]);
-        
+// View Editar---------------
+    public function viewEditarUsuarios($id) {
+         $dados = $this->usuario->buscarUsuariosPorId($id);
+        foreach($dados as $usuario){
+                $dados = $usuario;
+        }
+        View::render("usuario/edit", ["usuario"=> $dados ]);
     }
-    public function viewExcluirUsuario($id) {
-        View::render("usuario/delete", ["id_usuario"=> $id ]);
-        
+// View Excluir---------------
+
+    public function viewExcluirUsuarios($id){
+       View::render("usuario/delete", ["id_usuario"=> $id ]);
     }
-    public function relatorioUsuario($id, $data_inicio, $data_fim) {
+// View Relatorio---------------
+    public function relatorioUsuarios($id, $data_inicio, $data_fim) {
         View::render("usuario/details", 
         
         ["id"=> $id, "data_inicio"=> $data_inicio, "data_fim"=> $data_fim]);
     }
-// ---
+
+// ---------------
+// Atualizar---------------
 
     public function atualizarUsuarios() {
-        echo "atualizar Usuarios";
+        echo "Atualizar Usuarios";
         
-    }public function deletarUsuarios() {
-        echo "deletar Usuarios";
+    }
+    
+// Deletar---------------
+    public function deletarUsuarios() {
+        echo "Deletar Usuarios";
         
     }
 

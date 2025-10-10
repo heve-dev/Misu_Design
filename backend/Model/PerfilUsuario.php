@@ -124,70 +124,8 @@ class PerfilUsuario{
         }
     }
      
-  // metodo de atualizar o PerfilUsuario // update
-    function atualizarPerfilUsuario($id, $data_solicitada, $status_agendamento, $total_agendamento){
-        $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_perfil_usuario SET data_solicitada = :data_solicitada,
-         email_agendamento = :email, 
-         total_agendamento = :total_agendamento, 
-         status_agendamento = :status,
-         atualizado_em = :atual
-         WHERE id_agendamento = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':data_solicitada', $data_solicitada);
-        $stmt->bindParam(':total_agendamento', $total_agendamento);
-        $stmt->bindParam(':status_agendamento', $status_agendamento);
-        $stmt->bindParam(':atual', $dataatual);
-        if($stmt->execute()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-//metodo de inativar o PerfilUsuario // delete
-function inativarPerfilUsuario($id){
-    $dataatual = date('Y-m-d H:i:s');
-    $sql = "UPDATE tbl_perfil_usuario SET excluido_em = :atual WHERE id_agendamento = :id";
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':id', $id);
-    $stmt->bindParam(':atual', $dataatual);
-    if ($stmt->execute()){
-    return true;
-    } else {
-        return false;
-    };
-}
-
-    //metodo de ativar o PerfilUsuario excluido 
-function ativarPerfilUsuarioExcluido($id){
-    $sql = "UPDATE tbl_perfil_usuario SET excluido_em = :atual WHERE id_agendamento = :id";
-     $dataatual = date('Y-m-d H:i:s');
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':id', $id);
-    $stmt->bindParam(':atual', $dataatual);
-    if ($stmt->execute()){
-        return true;
-    } else {
-        return false;
-    };
-}
-
-}
-
-
-------------------------------------------------------------------------
-
-
-   
-
-    // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
-
- 
-
     // Atualizar perfil existente
-    function atualizarPerfil($id, $descricao, $foto, $banner) {
+    function atualizarPerfis($id, $descricao, $foto, $banner) {
         $dataatual = date('Y-m-d H:i:s');
         $sql = "UPDATE tbl_perfil_usuario 
                 SET descricao_perfil_usuario = :descricao,
@@ -202,18 +140,25 @@ function ativarPerfilUsuarioExcluido($id){
         $stmt->bindParam(':foto', $foto);
         $stmt->bindParam(':banner', $banner);
         $stmt->bindParam(':atual', $dataatual);
-        
-        return $stmt->execute();
+          if($stmt->execute()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    // Inativar perfil (soft delete)
+ // Inativar perfil (soft delete)
     function inativarPerfil($id) {
         $dataatual = date('Y-m-d H:i:s');
         $sql = "UPDATE tbl_perfil_usuario SET excluido_em = :atual WHERE id_perfil_usuario = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);
-        return $stmt->execute();
+         if ($stmt->execute()){
+    return true;
+    } else {
+        return false;
+    };
     }
 
     // Reativar perfil inativo
@@ -221,6 +166,12 @@ function ativarPerfilUsuarioExcluido($id){
         $sql = "UPDATE tbl_perfil_usuario SET excluido_em = NULL WHERE id_perfil_usuario = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+        if ($stmt->execute()){
+    return true;
+    } else {
+        return false;
+    };
     }
+
+}
 

@@ -23,140 +23,136 @@ class Pagamento{
     }
 // --------------- MÉTODOS DE BUSCA DE DADOS ---------------
 
- // metodo de buscar todos os pagamentos
-    function buscarPagamentos($db){
-        $sql = "SELECT * FROM tbl_pagamento";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($db);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-// metodo de buscar todos os pagamentos por usuario
-    function buscarPagamentoPorUsuario($usuario){
-        $sql = "SELECT * FROM tbl_pagamento where id_cliente = :usuario and excluido_em IS NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':usuario', $usuario); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-// metodo de buscar todos os pagamentos por Servico
-    function buscarPagamentoPorServico($servico){
-        $sql = "SELECT * FROM tbl_pagamento where id_servico = :servico and excluido_em IS NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':servico', $servico); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-// metodo de buscar todos os pagamentos por data
-    function buscarPagamentoPorData($data_solicitada){
-        $sql = "SELECT * FROM tbl_pagamento where data_solicitada = :data_solicitada and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':data_solicitada', $data_solicitada); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-     // metodo de buscar todos os pagamentos pelo Total
-     function buscarPagamentoPorTotal($total_pagamento){
-        $sql = "SELECT * FROM tbl_pagamento where total_pagamento = :total_pagamento and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':total_pagamento', $total_pagamento); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    // metodo de buscar todos os pagamentos por status
-     function buscarPagamentoPorStatus($status_pagamento){
-        $sql = "SELECT * FROM tbl_pagamento where status_pagamento = :status_pagamento and excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':status_pagamento', $status_pagamento); 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // pagamentos inativos
-    function buscarTodosPagamentosPendentes(){
-        $sql = "SELECT * FROM tbl_pagamento where excluido_em IS NOT NULL";
+    // Buscar todos os pagamentos
+    public function buscarPagamentos() {
+        $sql = "SELECT * FROM tbl_pagamento WHERE excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // metodo de buscar pagamento por ID
-    function buscarPagamentoPorID($db,$id){
-        $sql = 'SELECT id_pagamento FROM tbl_pagamento WHERE id_pagamento = :id';
-        $stmt = $db->prepare($sql);
+    // Buscar pagamentos excluídos
+    public function buscarPagamentosExcluidos() {
+        $sql = "SELECT * FROM tbl_pagamento WHERE excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Buscar pagamento por ID
+    public function buscarPagamentoPorId($id) {
+        $sql = "SELECT * FROM tbl_pagamento 
+                WHERE id_pagamento = :id AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Buscar pagamentos por status (ex: 'pago', 'pendente', 'cancelado')
+    public function buscarPagamentosPorStatus($status) {
+        $sql = "SELECT * FROM tbl_pagamento 
+                WHERE status_pagamento = :status 
+                AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':status', $status);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
+    // Buscar pagamentos por cliente
+    public function buscarPagamentosPorCliente($id_cliente) {
+        $sql = "SELECT * FROM tbl_pagamento 
+                WHERE id_cliente = :id_cliente 
+                AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_cliente', $id_cliente);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-// --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
+    // Buscar pagamentos por intervalo de datas
+    public function buscarPagamentosPorPeriodo($dataInicio, $dataFim) {
+        $sql = "SELECT * FROM tbl_pagamento 
+                WHERE data_pagamento BETWEEN :inicio AND :fim 
+                AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':inicio', $dataInicio);
+        $stmt->bindParam(':fim', $dataFim);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
- 
+    // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
-// metodo de registrar pagamento
+    // Registrar novo pagamento
+    public function registrarPagamento($id_cliente, $total, $status, $data_pagamento) {
+        $sql = "INSERT INTO tbl_pagamento 
+                (id_cliente, total_devedor, status_pagamento, data_pagamento) 
+                VALUES (:id_cliente, :total, :status, :data_pagamento)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_cliente', $id_cliente);
+        $stmt->bindParam(':total', $total);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':data_pagamento', $data_pagamento);
 
-function registrarPagamento($db, $data_solicitada, $total_pagamento, $status_pagamento){
-    $sql = 'INSERT INTO tbl_pagamento (data_solicitada, total_pagamento, status_pagamento)
-    VALUES (:data_solicitada, :total_pagamento, :status_pagamento)';
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':data_solicitada', $data_solicitada);
-    $stmt->bindParam(':total_pagamento', $total_pagamento);
-    $stmt->bindParam(':status_pagamento', $status_pagamento);
-    if($stmt->execute()){
-        return $this->db->lastInsertId();
+        if ($stmt->execute()) {
+            return $this->db->lastInsertId();
         } else {
             return false;
         }
     }
-     
-  // metodo de atualizar o usuario // update
-    function atualizarPagamento($id, $data_solicitada, $status_pagamento, $total_pagamento){
-        $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_pagamento SET data_solicitada = :data_solicitada,
-         email_pagamento = :email, 
-         total_pagamento = :total_pagamento, 
-         status_pagamento = :status,
-         atualizado_em = :atual
-         WHERE id_pagamento = :id";
+
+    // Atualizar pagamento
+    public function atualizarPagamento($id, $total, $status, $data_pagamento) {
+        $dataAtual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_pagamento SET 
+                    total_devedor = :total,
+                    status_pagamento = :status,
+                    data_pagamento = :data_pagamento,
+                    atualizado_em = :atualizado
+                WHERE id_pagamento = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':data_solicitada', $data_solicitada);
-        $stmt->bindParam(':total_pagamento', $total_pagamento);
-        $stmt->bindParam(':status_pagamento', $status_pagamento);
-        $stmt->bindParam(':atual', $dataatual);
-        if($stmt->execute()){
-            return true;
-        }else{
+        $stmt->bindParam(':total', $total);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':data_pagamento', $data_pagamento);
+        $stmt->bindParam(':atualizado', $dataAtual);
+  if ($stmt->execute()) {
+            return $this->db->lastInsertId();
+        } else {
             return false;
         }
     }
 
-//metodo de inativar o pagamento // delete
-function quitarPagamento($id){
-    $dataatual = date('Y-m-d H:i:s');
-    $sql = "UPDATE tbl_pagamento SET excluido_em = :atual WHERE id_pagamento = :id";
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':id', $id);
-    $stmt->bindParam(':atual', $dataatual);
-    if ($stmt->execute()){
-    return true;
-    } else {
-        return false;
-    };
+    // Inativar pagamento (exclusão lógica)
+    public function inativarPagamento($id) {
+        $dataAtual = date('Y-m-d H:i:s');
+        $sql = "UPDATE tbl_pagamento 
+                SET excluido_em = :excluido 
+                WHERE id_pagamento = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':excluido', $dataAtual);
+         if ($stmt->execute()) {
+            return $this->db->lastInsertId();
+        } else {
+            return false;
+        }
+    }
+
+    // Reativar pagamento excluído
+    public function ativarPagamentoExcluido($id) {
+        $sql = "UPDATE tbl_pagamento 
+                SET excluido_em = NULL 
+                WHERE id_pagamento = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+          if ($stmt->execute()) {
+            return $this->db->lastInsertId();
+        } else {
+            return false;
+        }
+    }
 }
 
-    //metodo de ativar o pagamento excluido 
-function atualizarPagamentoQuitado($id){
-    $sql = "UPDATE tbl_pagamento SET excluido_em = :atual WHERE id_pagamento = :id";
-     $dataatual = date('Y-m-d H:i:s');
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':id', $id);
-    $stmt->bindParam(':atual', $dataatual);
-    if ($stmt->execute()){
-        return true;
-    } else {
-        return false;
-    };
-}
-
-}
