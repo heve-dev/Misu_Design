@@ -1,72 +1,78 @@
 <?php
 namespace App\Misu\Controllers;
 
-use App\Misu\Model\Usuario;
+use App\Misu\Model\Contato;
 use App\Misu\Database\Database;
 use App\Misu\Core\View;
 use App\Misu\Core\Redirect;
-use App\Misu\Validadores\UsuarioValidador;
+use App\Misu\Validadores\ContatoValidador;
 
-class UsuarioController {
-    public $usuario;
+class ContatoController {
+    public $contato;
     public $db;
+
     public function __construct() {
         $this->db = Database::getInstance();
-        $this->usuario = new Usuario($this->db);
+        $this->contato = new Contato($this->db);
     }
 
-     // método - index
-    public function index() {
-        $resultado = $this->usuario->buscarUsuario();
-        var_dump ($resultado);
-}
+    public function salvarContato() {
+        $erros = ContatoValidador::ValidarEntradas($_POST);
+        if(!empty($erros)){
+            Redirect::redirecionarComMensagem("contato/criar","error", implode("<br>", $erros));
+        }
 
-
-//30.09
-  //raiz do array
-   public function viewListarUsuarios(){
-        $dados = $this->usuario->buscarUsuario();
-        View::render("usuario/index", ["usuarios"=> $dados] );
-    }
-//---  VIEWS
-    public function viewCriarUsuario() {
-        View::render("usuario/create");
-        
-    }
-    public function viewEditarUsuario() {
-        View::render("usuario/edit");
-        
-    }
-    public function viewExcluirUsuario() {
-        View::render("usuario/delete");
-        
-    }
-
-// ---
-    public function salvarUsuario() {
-       $erros = UsuarioValidador::ValidarEntradas($_POST);
-       if(!empty($erros)){
-            Redirect::redirecionarComMensagem("usuario/criar","error", implode("<br>", $erros));
-       }
-        if($this->usuario->inserirUsuario(
-            $_POST["nome_usuario"],
-            $_POST["email_usuario"],
-            $_POST["senha_usuario"],
-            $_POST["tipo_usuario"],
+        if($this->contato->registrarContato(
+            $_POST["nome_contato"],
+            $_POST["telefone_contato"],
+            $_POST["email_contato"],
+            $_POST["mensagem_contato"],
             "Ativo"
         )){
-            Redirect::redirecionarComMensagem("usuario/listar","success","Usuário cadastrado com sucesso!");
-        }else{
-            Redirect::redirecionarComMensagem("usuario/criar","error","Erro ao cadastrar usuário!");
+            Redirect::redirecionarComMensagem("contato/listar","success","Contato cadastrado com sucesso!");
+        } else {
+            Redirect::redirecionarComMensagem("contato/criar","error","Erro ao cadastrar contato!");
         }
-        
-    }
-    public function atualizarUsuarios() {
-        echo "atualizar Usuarios";
-        
-    }public function deletarUsuarios() {
-        echo "deletar Usuarios";
-        
     }
 
+    public function index() {
+        $resultado = $this->contato->buscarContatos();
+        var_dump($resultado);
+    }
+
+    public function viewListarContatos($pagina) {
+        $dados = $this->contato->paginacao($pagina);
+        $total = $this->contato->totalDeContatos();
+        View::render("contato/index", [
+            "contatos"=> $dados,
+            "total_contatos"=> $total[0],
+            "total_inativos" => 22,
+            "total_ativos" => 12
+        ]);
+    }
+
+    public function viewCriarContato() {
+        View::render("contato/create");
+    }
+
+    public function viewEditarContato($id) {
+        $dados = $this->contato->buscarContatoPorId($id);
+        foreach($dados as $contato){
+            $dados = $contato;
+        }
+        View::render("contato/edit", ["contato"=> $dados]);
+    }
+
+    public function viewExcluirContato($id){
+        View::render("contato/delete", ["id_contato"=> $id]);
+    }
+
+    public function atualizarContato() {
+        echo "Atualizar Contato";
+    }
+
+    public function deletarContato() {
+        echo "Deletar Contato";  
+    }
 }
+?>

@@ -1,72 +1,90 @@
 <?php
 namespace App\Misu\Controllers;
 
-use App\Misu\Model\Usuario;
+use App\Misu\Model\Servico;
 use App\Misu\Database\Database;
 use App\Misu\Core\View;
 use App\Misu\Core\Redirect;
-use App\Misu\Validadores\UsuarioValidador;
+use App\Misu\Validadores\ServicoValidador;
+use App\Misu\Core\FileManager;
 
-class UsuarioController {
-    public $usuario;
+class ServicoController {
+    public $servico;
     public $db;
+    public $gerenciarImagem;
+
     public function __construct() {
         $this->db = Database::getInstance();
-        $this->usuario = new Usuario($this->db);
+        $this->servico = new Servico($this->db);
+        $this->gerenciarImagem = new FileManager('upload');
     }
 
-     // método - index
-    public function index() {
-        $resultado = $this->usuario->buscarUsuario();
-        var_dump ($resultado);
-}
+    // Salvar novo serviço
+    public function salvarServicos() {
+        $erros = ServicoValidador::ValidarEntradas($_POST);
+        if(!empty($erros)){
+            Redirect::redirecionarComMensagem("servico/criar","error", implode("<br>", $erros));
+        }
 
-
-//30.09
-  //raiz do array
-   public function viewListarUsuarios(){
-        $dados = $this->usuario->buscarUsuario();
-        View::render("usuario/index", ["usuarios"=> $dados] );
-    }
-//---  VIEWS
-    public function viewCriarUsuario() {
-        View::render("usuario/create");
-        
-    }
-    public function viewEditarUsuario() {
-        View::render("usuario/edit");
-        
-    }
-    public function viewExcluirUsuario() {
-        View::render("usuario/delete");
-        
-    }
-
-// ---
-    public function salvarUsuario() {
-       $erros = UsuarioValidador::ValidarEntradas($_POST);
-       if(!empty($erros)){
-            Redirect::redirecionarComMensagem("usuario/criar","error", implode("<br>", $erros));
-       }
-        if($this->usuario->inserirUsuario(
-            $_POST["nome_usuario"],
-            $_POST["email_usuario"],
-            $_POST["senha_usuario"],
-            $_POST["tipo_usuario"],
+        $imagem = $this->gerenciarImagem->salvarArquivo($_FILES['imagem'], 'servico');
+        if($this->servico->criarServicos(
+            $_POST["nome_servico"],
+            $_POST["descricao_servico"],
+            $_POST["valor_servico"],
+            $imagem,
             "Ativo"
         )){
-            Redirect::redirecionarComMensagem("usuario/listar","success","Usuário cadastrado com sucesso!");
-        }else{
-            Redirect::redirecionarComMensagem("usuario/criar","error","Erro ao cadastrar usuário!");
+            Redirect::redirecionarComMensagem("servico/listar","success","Serviço cadastrado com sucesso!");
+        } else {
+            Redirect::redirecionarComMensagem("servico/criar","error","Erro ao cadastrar serviço!");
         }
-        
-    }
-    public function atualizarUsuarios() {
-        echo "atualizar Usuarios";
-        
-    }public function deletarUsuarios() {
-        echo "deletar Usuarios";
-        
     }
 
+    // Index
+    public function index() {
+        $resultado = $this->servico->buscarServicos();
+        var_dump($resultado);
+    }
+
+    // Listar serviços paginados
+    public function viewListarServicos($pagina) {
+        $dados = $this->servico->paginacao($pagina);
+        $total = $this->servico->totalDeServicos();
+        View::render("servico/index", [
+            "servicos"=> $dados,
+            "total_servicos"=> $total[0],
+            "total_inativos" => 22,
+            "total_ativos" => 12
+        ]);
+    }
+
+    // View criar
+    public function viewCriarServico() {
+        View::render("servico/create");
+    }
+
+    // View editar
+    public function viewEditarServico($id) {
+        $dados = $this->servico->buscarServicosPorId($id);
+        foreach($dados as $servico){
+            $dados = $servico;
+        }
+        View::render("servico/edit", ["servico"=> $dados]);
+    }
+
+    // View excluir
+    public function viewExcluirServico($id){
+        View::render("servico/delete", ["id_servico"=> $id]);
+    }
+
+    // Atualizar
+    public function atualizarServico() {
+        echo "Atualizar Serviço";
+    }
+
+    // Deletar
+    public function deletarServico() {
+        echo "Deletar Serviço";  
+    }
 }
+?>

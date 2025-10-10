@@ -28,12 +28,36 @@ class Servico{
 
 // --------------- MÉTODOS DE BUSCA DE DADOS ---------------
 
+// Total de serviços
+public function totalDeServicos() {
+    $sql = "SELECT COUNT(*) as total FROM tbl_servico";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+// Total de serviços ativos
+public function totalDeServicosAtivos() {
+    $sql = "SELECT COUNT(*) as total FROM tbl_servico WHERE excluido_em IS NULL";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+// Total de serviços inativos/excluídos
+public function totalDeServicosInativos() {
+    $sql = "SELECT COUNT(*) as total FROM tbl_servico WHERE excluido_em IS NOT NULL";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
 public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
-        $totalQuery = "SELECT COUNT(*) FROM `tbl_usuario`";
+        $totalQuery = "SELECT COUNT(*) FROM `tbl_servico`";
         $totalStmt = $this->db->query($totalQuery);
         $total_de_registros = $totalStmt->fetchColumn();
         $offset = ($pagina - 1) * $por_pagina;
-        $dataQuery = "SELECT * FROM `tbl_usuario` LIMIT :limit OFFSET :offset";
+        $dataQuery = "SELECT * FROM `tbl_servico` LIMIT :limit OFFSET :offset";
         $dataStmt = $this->db->prepare($dataQuery);
         $dataStmt->bindValue(':limit', $por_pagina, PDO::PARAM_INT);
         $dataStmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -51,16 +75,6 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
             'para' => $offset + count($dados)
         ];
     }
-
-// Buscar todos os serviços inativos
-    function buscarServicosInativos(){
-        $sql = "SELECT * FROM tbl_servico WHERE excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    
 
 // Buscar serviço por ID
     function buscarServicosPorId($id){
@@ -91,19 +105,6 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-
-//     $id_servico;
-//     $id_categoria;
-//     $nome_servico;
-//     $descricao_servico;
-//     $valor_servico;
-//     $foto_servico;
-//     $status_servico;
-//     $criado_em;
-//     $atualizado_em;
-//     $excluido_em;
-
 // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
 
@@ -127,7 +128,6 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
             return false;
         }
     }
-
 
     // Atualizar serviço existente / update
     function atualizarServicos($id, $id_categoria, $nome, $descricao, $valor, $foto, $status){

@@ -1,76 +1,78 @@
 <?php
 namespace App\Misu\Controllers;
 
-use App\Misu\Model\Usuario;
+use App\Misu\Model\Agendamento;
 use App\Misu\Database\Database;
 use App\Misu\Core\View;
 use App\Misu\Core\Redirect;
-use App\Misu\Validadores\UsuarioValidador;
+use App\Misu\Validadores\AgendamentoValidador;
 
-class UsuarioController {
-    public $usuario;
+class AgendamentoController {
+    public $agendamento;
     public $db;
+
     public function __construct() {
         $this->db = Database::getInstance();
-        $this->usuario = new Usuario($this->db);
+        $this->agendamento = new Agendamento($this->db);
     }
 
-     // método - index
-    public function index() {
-        $resultado = $this->usuario->buscarUsuarios();
-        var_dump ($resultado);
-}
-
-
-//30.09
-  //raiz do array
-   public function viewListarUsuarios(){
-        $dados = $this->usuario->buscarUsuarios();
-        View::render("usuario/index", ["usuarios"=> $dados] );
-    }
-//---  VIEWS
-
-//mostram a saida de dados no dash
-
-
-    public function viewCriarUsuario() {
-        View::render("usuario/create");
-        
-    }
-    public function viewEditarUsuario() {
-        View::render("usuario/edit");
-        
-    }
-    public function viewExcluirUsuario() {
-        View::render("usuario/delete");
-        
-    }
-
-// ---
-    public function salvarUsuario() {
-       $erros = UsuarioValidador::ValidarEntradas($_POST);
-       if(!empty($erros)){
-            Redirect::redirecionarComMensagem("usuario/criar","error", implode("<br>", $erros));
-       }
-        if($this->usuario->registrarUsuarios(
-            $_POST["nome_usuario"],
-            $_POST["email_usuario"],
-            $_POST["senha_usuario"],
-            $_POST["tipo_usuario"],
-            "Ativo"
-        )){
-            Redirect::redirecionarComMensagem("usuario/listar","success","Usuário cadastrado com sucesso!");
-        }else{
-            Redirect::redirecionarComMensagem("usuario/criar","error","Erro ao cadastrar usuário!");
+    public function salvarAgendamento() {
+        $erros = AgendamentoValidador::ValidarEntradas($_POST);
+        if(!empty($erros)){
+            Redirect::redirecionarComMensagem("agendamento/criar","error", implode("<br>", $erros));
         }
-        
-    }
-    public function atualizarUsuarios() {
-        echo "atualizar Usuarios";
-        
-    }public function deletarUsuarios() {
-        echo "deletar Usuarios";
-        
+
+        if($this->agendamento->registrarAgendamento(
+            $_POST["id_cliente"],
+            $_POST["id_servico"],
+            $_POST["data_solicitada"],
+            $_POST["total_agendamento"],
+            $_POST["status_agendamento"]
+        )){
+            Redirect::redirecionarComMensagem("agendamento/listar","success","Agendamento cadastrado com sucesso!");
+        } else {
+            Redirect::redirecionarComMensagem("agendamento/criar","error","Erro ao cadastrar agendamento!");
+        }
     }
 
+    public function index() {
+        $resultado = $this->agendamento->buscarAgendamentos();
+        var_dump($resultado);
+    }
+
+    public function viewListarAgendamentos($pagina) {
+        $dados = $this->agendamento->paginacao($pagina);
+        $total = $this->agendamento->totalDeAgendamentos();
+        View::render("agendamento/index", [
+            "agendamentos"=> $dados,
+            "total_agendamentos"=> $total[0],
+            "total_inativos" => 22,
+            "total_ativos" => 12
+        ]);
+    }
+
+    public function viewCriarAgendamento() {
+        View::render("agendamento/create");
+    }
+
+    public function viewEditarAgendamento($id) {
+        $dados = $this->agendamento->buscarAgendamentoPorId($id);
+        foreach($dados as $agendamento){
+            $dados = $agendamento;
+        }
+        View::render("agendamento/edit", ["agendamento"=> $dados]);
+    }
+
+    public function viewExcluirAgendamento($id){
+        View::render("agendamento/delete", ["id_agendamento"=> $id]);
+    }
+
+    public function atualizarAgendamento() {
+        echo "Atualizar Agendamento";
+    }
+
+    public function deletarAgendamento() {
+        echo "Deletar Agendamento";  
+    }
 }
+?>

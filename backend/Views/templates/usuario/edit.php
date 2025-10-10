@@ -13,7 +13,7 @@
     <label for="Tipo">Tipo</label>
     <select name="tipo_usuario" id="tipo_usuario" value= "<?php echo $usuario['tipo_usuario']; ?>" required>
         <option value="admin">Admin</option>
-        <option value="usuario">Usuário</option>
+        <option value="user">Usuário</option>
 <select>
     <br>
     <label for="imagem">Imagem</label>
