@@ -21,26 +21,26 @@
         </nav>
     </header>
     <main>
-        <h1>Contato</h1>
-        <p>Estou aqui para ajudar! Se você tiver alguma dúvida, quiser discutir um projeto ou simplesmente dizer
+        <h2 class="h2-contato">Contato</h2>
+        <p class="texto-contato">Estou aqui para ajudar! Se você tiver alguma dúvida, quiser discutir um projeto ou simplesmente dizer
             olá, sinta-se à vontade para entrar em contato comigo através do formulário abaixo ou pelos meus canais de
             redes sociais.</p>
-        <form action="#" method="post">
+        <form class="formulario" action="backend/Controllers/ContatoController.php" method="post">
             <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" placeholder="Digite seu nome:" required>
 
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" placeholder="Digite seu e-mail:" required>
 
             <label for="message">Mensagem:</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
+            <textarea id="message" name="message" rows="5" placeholder="Conte sua necessidade:" required></textarea>
 
-            <button type="submit">Enviar</button>
+            <button class="botao-enviar" type="submit">Enviar</button>
         </form>
         </main>
         <section>
-            <h2>Meus Canais de Redes Sociais</h2>
-            <p>Você também pode me encontrar nas seguintes plataformas:</p>
+            <h2 class="h2-contato">Meus Canais de Redes Sociais</h2>
+            <p class="texto-contato">Você também pode me encontrar nas seguintes plataformas:</p>
             <ul>
                 <li><a href="#">LinkedIn</a></li>
                 <li><a href="#">Instagram</a></li>
@@ -50,19 +50,32 @@
         <a href="contato.html"><button>Suba ao topo</button></a>
     <section>
         <footer>
-            <div class="top"></div>
-            <div class="row">
+            <div class="footer-top"></div>
+            <div class="footer-row">
                     <div class="col1">
                         <h4>Ou me conheça nas redes sociais</h4>
                                 <a href="https://www.linkedin.com/in/hevellin-justina-b1a274334/?trk=opento_sprofile_topcard">LinkedIn</a>
                                 <a href="https://www.instagram.com/design.misu/">Instagram</a>
                                 <a href="https://www.behance.net/hevellinsantos1">Behance</a>
                     </div>
-                    <div class="col2"></div>
-                    <div class="col3"></div>
-            </div>
-            <div class="bottom">
+                    <div class="col2">
+                        <h4>Links Rápidos</h4>
+                                <a href="index.html">Início</a>
+                                <a href="sobre.html">Sobre</a>
+                                <a href="servicos.html">Serviços</a>
+                                <a href="portfolio.html">Portfólio</a>
+                                <a href="blog.html">Blog</a>
+                                <a href="contato.html">Contato</a>
+                    </div>
+                    <div class="col3">
+                        <h4>Contato</h4>
+                                <p>Email:
+                    </div>
+                    </div>
+            <div class="footer-bottom">
                 <p>&copy; 2025 Misu Design. Todos os direitos reservados.</p>
+                <p>Política de Privacidade</p>
+                 <p>Termos de Serviço</p>
             </div>
         </footer>
     </section>
