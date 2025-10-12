@@ -9,6 +9,9 @@ main{
     background-color: rgb(252, 225, 225);
 
 }
+section{
+    background-color: rgb(252, 225, 225);
+}
 ul{
     list-style: none;
     padding: 0;
