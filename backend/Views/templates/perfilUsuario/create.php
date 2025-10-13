@@ -1,44 +1,25 @@
-<div>Sou o create</div>
+<div>Sou o create Perfil_Usuario</div>
  o action é pra onde o form vai ser enviado 
-<form action="/backend/usuario/salvar" method="post">
-    
-    <label for="Categoria">Categoria</label>
-    <input type="id" name="id_categoria" id="id_categoria" required>
-    <br>
-
+<form action="/backend/perfilusuario/salvar" method="post" enctype="multipart/form-data">
     <label for="Nome">Nome</label>
     <input type="text" name="nome_servico" id="nome_servico" required>
     <br>
+
     
-    <label for="Descricao">Descrição</label>
-    <input type="text" name="descricao_servico" id="descricao_servico" required>
+    <label for="Email">Email</label>
+    <input type="email" name="email_usuario" id="email_usuario" required>
     <br>
-
-    <label for="Valor">Valor</label>
-    <input type="text" name="valor_servico" id="valor_servico" required>
+    <label for="Senha">Senha</label>
+    <input type="password" name="senha_usuario" id="senha_usuario" required>
     <br>
-
-    <label for="Foto">Foto</label>
-    <input type="file" name="foto_servico" id="foto_servico" required>
-    <br>
-
-    <label for="Foto">Foto</label>
-    <input type="text" name="status_servico" id="status_servico" required>
-    <br>
-
-   
-        <?php
+    <label for="Categoria">Categoria</label>
+    <select name="categoria_servico" id="categoria_servico" required>
+        <?php 
+        foreach($categorias as $categoria){
+            echo '<option value='.$categoria["id_categoria"].'>'.$categoria["nome_categoria"].'</option>';
+        }
+        ?>
+    </select>
     <button type="submit">Salvar</button>
-
-
-
-
-
-</form>
-    <button type="submit">Salvar</button>
-
-
-
-
 
 </form>
