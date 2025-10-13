@@ -56,7 +56,7 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <div class="w3-main" style="margin-left:20%;margin-top:43px;">
 
 <?php
-use App\Kipedreiro\Core\Flash;
+use App\Misu\Core\Flash;
 $mensagem = Flash::get();
 if(isset($mensagem)){
    foreach($mensagem as $key => $value){

@@ -18,19 +18,21 @@ class ServicoController {
         $this->servico = new Servico($this->db);
         $this->gerenciarImagem = new FileManager('upload');
     }
-
     // Salvar novo serviço
     public function salvarServicos() {
+        var_dump($_POST); exit;
         $erros = ServicoValidador::ValidarEntradas($_POST);
         if(!empty($erros)){
             Redirect::redirecionarComMensagem("servico/criar","error", implode("<br>", $erros));
         }
 
         $imagem = $this->gerenciarImagem->salvarArquivo($_FILES['imagem'], 'servico');
-        if($this->servico->criarServicos(
+        if($this->servico->registrarServicos(
             $_POST["nome_servico"],
             $_POST["descricao_servico"],
             $_POST["valor_servico"],
+            $_POST["foto_servico"],
+            $_POST["status_servico"],
             $imagem,
             "Ativo"
         )){
@@ -42,7 +44,7 @@ class ServicoController {
 
     // Index
     public function index() {
-        $resultado = $this->servico->buscarServicos();
+        $resultado = $this->servico->totalDeServicos();
         var_dump($resultado);
     }
 
@@ -57,14 +59,17 @@ class ServicoController {
             "total_ativos" => 12
         ]);
     }
-
+//---  VIEWS
     // View criar
-    public function viewCriarServico() {
-        View::render("servico/create");
+    public function viewCriarServicos() {
+        
+        $categorias = $this->servico->listarCategorias();
+        
+        View::render("servico/create", ["categorias"=> $categorias]);
     }
 
     // View editar
-    public function viewEditarServico($id) {
+    public function viewEditarServicos($id) {
         $dados = $this->servico->buscarServicosPorId($id);
         foreach($dados as $servico){
             $dados = $servico;
@@ -73,18 +78,23 @@ class ServicoController {
     }
 
     // View excluir
-    public function viewExcluirServico($id){
+    public function viewExcluirServicos($id){
         View::render("servico/delete", ["id_servico"=> $id]);
     }
 
     // Atualizar
-    public function atualizarServico() {
+    public function atualizarServicos() {
         echo "Atualizar Serviço";
     }
 
     // Deletar
-    public function deletarServico() {
+    public function deletarServicos() {
         echo "Deletar Serviço";  
+    }
+    // View Relatorio---------------
+    public function relatorioUsuarios($id, $data_inicio, $data_fim) {
+        View::render("usuario/details", 
+        ["id"=> $id, "data_inicio"=> $data_inicio, "data_fim"=> $data_fim]);
     }
 }
 ?>

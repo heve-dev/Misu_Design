@@ -16,11 +16,7 @@ class AgendamentoController {
         $this->agendamento = new Agendamento($this->db);
     }
 
-    public function salvarAgendamento() {
-        $erros = AgendamentoValidador::ValidarEntradas($_POST);
-        if(!empty($erros)){
-            Redirect::redirecionarComMensagem("agendamento/criar","error", implode("<br>", $erros));
-        }
+  
 
         if($this->agendamento->registrarAgendamento(
             $_POST["id_cliente"],
@@ -67,6 +63,12 @@ class AgendamentoController {
         View::render("agendamento/delete", ["id_agendamento"=> $id]);
     }
 
+      public function salvarAgendamento() {
+        $erros = AgendamentoValidador::ValidarEntradas($_POST);
+        if(!empty($erros)){
+            Redirect::redirecionarComMensagem("agendamento/criar","error", implode("<br>", $erros));
+        }
+    }
     public function atualizarAgendamento() {
         echo "Atualizar Agendamento";
     }
@@ -74,5 +76,5 @@ class AgendamentoController {
     public function deletarAgendamento() {
         echo "Deletar Agendamento";  
     }
-}
+
 ?>

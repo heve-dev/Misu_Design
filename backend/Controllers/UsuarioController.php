@@ -13,6 +13,7 @@ class UsuarioController {
     public $db;
     public $gerenciarImagem;
     public function __construct() {
+      
         $this->db = Database::getInstance();
         $this->usuario = new Usuario($this->db);
         $this->gerenciarImagem = new FileManager('upload');
@@ -41,7 +42,7 @@ class UsuarioController {
      // método - index
     public function index() {
         $resultado = $this->usuario->buscarUsuarios();
-        var_dump ($resultado);
+       echo "Cheguei";
 }
 
   //raiz do array
@@ -60,6 +61,7 @@ class UsuarioController {
 //---  VIEWS
 // View Criar---------------
     public function viewCriarUsuarios() {
+       
         View::render("usuario/create");
     }
 // View Editar---------------

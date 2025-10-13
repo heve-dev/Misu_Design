@@ -4,9 +4,6 @@ namespace App\Misu\Model;
 
 use PDO;
 
-$usuario = new Usuario($db);
-$servico = new Servico($db);
-
 /* Executa uma instrução preparada passando um array de valores */
 class Servico{
     private $id_servico;
@@ -185,5 +182,11 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
         }else{
             return false;
         }
+    }
+    function listarCategorias() {
+        $sql = "SELECT * FROM tbl_categoria WHERE excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

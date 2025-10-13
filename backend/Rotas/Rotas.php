@@ -11,10 +11,10 @@ class Rotas
             "GET" => [
 //Usuario        o caminho da URL     o nome do controle e o metodo do controle
                 "/usuario" => "UsuarioController@index",
-                "/usuario/criar" => "UsuarioController@viewCriarUsuario",
-                "/usuario/listar/{pagina}" => "UsuarioController@viewListarUsuario",
-                "/usuario/editar/{id}" => "UsuarioController@viewEditarUsuario",
-                "/usuario/excluir/{id}" => "UsuarioController@viewExcluirUsuario",
+                "/usuario/criar" => "UsuarioController@viewCriarUsuarios",
+                "/usuario/listar/{pagina}" => "UsuarioController@viewListarUsuarios",
+                "/usuario/editar/{id}" => "UsuarioController@viewEditarUsuarios",
+                "/usuario/excluir/{id}" => "UsuarioController@viewExcluirUsuarios",
 //PerfilPerfilUsuario  
                 "/perfilUsuario" => "PerfilUsuarioController@index",
                 "/perfilUsuario/criar" => "PerfilUsuarioController@viewCriarPerfilUsuario",
@@ -22,11 +22,11 @@ class Rotas
                 "/perfilUsuario/editar/{id}" => "PerfilUsuarioController@viewEditarPerfilUsuario",
                 "/perfilUsuario/excluir/{id}" => "PerfilUsuarioController@viewExcluirPerfilUsuario",
 //Servico
-                "/servicos" => "ServicosController@index",
-                "/servico/criar" => "ServicosController@viewCriarServicos",
-                "/servico/listar" => "ServicosController@viewListarServicos",
-                "/servico/editar/{id}" => "ServicosController@viewEditarServicos",
-                "/servico/excluir/{id}" => "ServicosController@viewExcluirServicos",
+                "/servico" => "ServicosController@index",
+                "/servico/criar" => "ServicoController@viewCriarServicos",
+                "/servico/listar" => "ServicoController@viewListarServicos",
+                "/servico/editar/{id}" => "ServicoController@viewEditarServicos",
+                "/servico/excluir/{id}" => "ServicoController@viewExcluirServicos",
 //Categoria
                 "/categoria" => "CategoriaController@index",
                 "/categoria/criar" => "CategoriaController@viewCriarCategoria",
@@ -95,9 +95,9 @@ class Rotas
                 "/perfilUsuario/deletar" => "PerfilUsuarioController@deletarPerfilUsuario",
 
 //Servico
-                "/servico/salvar/{id}" => "ServicoController@salvarServico",
-                "/servico/atualizar/{id}" => "ServicoController@atualizarServico",
-                "/servico/deletar" => "ServicoController@deletarServico",
+                "/servico/salvar" => "ServicoController@salvarServicos",
+                "/servico/atualizar/{id}" => "ServicoController@atualizarServicos",
+                "/servico/deletar" => "ServicoController@deletarServicos",
                 
 //Categoria
                 "/categoria/salvar/{id}" => "CategoriaController@salvarCategoria",
