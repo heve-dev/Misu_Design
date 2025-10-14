@@ -183,4 +183,16 @@ class Usuario{
             return false;
         }
     }
+
+    public function checarCredenciais(string $email, string $senha) {
+        $usuario = $this->buscarUsuariosPorEmail($email);
+        if (count($usuario) !== 1) {
+            return false; // Usuário não encontrado ou múltiplos usuários com o mesmo email
+        }
+        $usuario = $usuario[0];
+        if (password_verify($senha, $usuario['senha_usuario'])) {
+            return $usuario; // Credenciais válidas
+        } 
+            return false; // Senha incorreta
+        }
 }
