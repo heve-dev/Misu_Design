@@ -1,3 +1,8 @@
+<?php
+use App\Misu\Core\Flash;
+use App\Misu\Core\Session;
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,6 +17,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 </style>
 </head>
 <body class="fundo-cinza">
+  <?php
+  $session = new Session();
+  if($session->has('usuario_id')){
+  ?>
 
 <!-- Top container -->
 <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
@@ -56,18 +65,18 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <div class="w3-main" style="margin-left:20%;margin-top:43px;">
 
 <?php
-use App\Misu\Core\Flash;
+}
 $mensagem = Flash::get();
 if(isset($mensagem)){
-   foreach($mensagem as $key => $value){
-        if($key == "type"){
-            $tipo = $value == "success" ? "alert-success" : "alert-danger";
-            echo "<div class='alert $tipo' role='alert'>";
-        }else{
-            echo $value;
-            echo "</div>";
-        }
-   }
+  foreach($mensagem as $key => $value){
+    if($key == "type"){
+      $tipo = $value =="sucess" ? "alert-sucess" : "alert-danger";
+      echo "<div class='alert $tipo' role='alert'>";
+    }else{
+      echo $value;
+      echo "<div>";
+    }
+  }
 }
 
 ?>
