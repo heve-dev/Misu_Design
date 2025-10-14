@@ -80,6 +80,12 @@ class Rotas
 
                 "/usuario/{id}/relatorio/{dataInicial}/{dataFinal}" => "UsuarioController@relatorioIsuario",
 
+                // Dashboard
+                '/register' => 'AuthController@register',
+                '/login' => 'AuthController@login',
+                '/logout' => 'AuthController@logout',
+                '/admin/dashboard' => 'Admin\DashboardController@index',
+
 
     ],
     
@@ -89,6 +95,11 @@ class Rotas
                 "/usuario/salvar/{id}" => "UsuarioController@salvarUsuario",
                 "/usuario/atualizar/{id}" => "UsuarioController@atualizarUsuario",
                 "/usuario/deletar/{id}" => "UsuarioController@deletarUsuario",
+                
+                '/register' => 'AuthController@cadastrarUsuario',
+                '/login' => 'AuthController@authenticar',
+
+
 //PerfilPerfilUsuario  
                 "/perfilUsuario/salvar/{id}" => "PerfilUsuarioController@salvarPerfilUsuario",
                 "/perfilUsuario/atualizar/{id}" => "PerfilUsuarioController@atualizarPerfilUsuario",
