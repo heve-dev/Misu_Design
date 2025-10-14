@@ -7,8 +7,10 @@ use App\Misu\Core\View;
 use App\Misu\Core\Redirect;
 use App\Misu\Validadores\UsuarioValidador;
 use App\Misu\Core\FileManager;
+use App\Misu\Controllers\Admin\AuthenticatedController;
+use App\Misu\Controllers\Admin\AdminController;
 
-class UsuarioController {
+class UsuarioController extends AdminController{
     public $usuario;
     public $db;
     public $gerenciarImagem;
