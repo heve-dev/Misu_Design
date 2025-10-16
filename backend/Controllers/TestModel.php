@@ -17,7 +17,7 @@ $hevellin = new Usuario($db);
 var_dump($resultado);
 
 
-$id = $usuario->inserirPerfilUsuario('Hevellin', 'aaaa@gmail.com','123456','cliente','ativo');
+$id = $usuario->registrarUsuarios('Hevellin', 'aaaa@gmail.com','123456','cliente','ativo');
 $resultado + $perfil_usuario->inserirPerfil(
     $id, 'foto', 'banner','descrição');
 //$resultado = $perfil->excluirPerfil(1);
