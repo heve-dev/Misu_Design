@@ -67,4 +67,4 @@ class AvaliacaoController {
         View::render("avaliacao/delete", ["id_avaliacao"=> $id]);
     }
 
-    public fun
+}

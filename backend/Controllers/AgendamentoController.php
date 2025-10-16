@@ -14,10 +14,7 @@ class AgendamentoController {
     public function __construct() {
         $this->db = Database::getInstance();
         $this->agendamento = new Agendamento($this->db);
-    }
-
-  
-
+    
         if($this->agendamento->registrarAgendamento(
             $_POST["id_cliente"],
             $_POST["id_servico"],
@@ -32,7 +29,7 @@ class AgendamentoController {
     }
 
     public function index() {
-        $resultado = $this->agendamento->buscarAgendamentos();
+        $resultado = $this->agendamento->buscarAgendamentosAtivos();
         var_dump($resultado);
     }
 
@@ -76,5 +73,6 @@ class AgendamentoController {
     public function deletarAgendamento() {
         echo "Deletar Agendamento";  
     }
+}
 
 ?>
