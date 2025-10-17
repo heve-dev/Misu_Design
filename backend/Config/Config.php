@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Misu\Database;
+namespace App\Misu\Config;
 
 class Config
 {

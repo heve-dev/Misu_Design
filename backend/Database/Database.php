@@ -4,7 +4,7 @@ namespace App\Misu\Database;
 use PDO;
 use PDOException;
 use Exception;
-use App\Misu\Database\Config;
+use App\Misu\Config\Config;
 
 class Database {
     private static $instance = null;
