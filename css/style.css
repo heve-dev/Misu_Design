@@ -2,9 +2,9 @@
 @import url(header.css);
 @import url(principal.css);
 @import url(sobremim.css);
-@import url(meusservicos.css);
-@import url(ultimosprojetos.css);
-@import url(blogindex.css);
-@import url(contatoindex.css);
+@import url(servico.css);
+@import url(portfolio.css);
+@import url(blog.css);
+@import url(contato.css);
 @import url(depoimento.css);
 @import url(footer.css);

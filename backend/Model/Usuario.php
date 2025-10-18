@@ -8,8 +8,11 @@ class Usuario{
     private $id_usuario;
     private $nome_usuario;
     private $email_usuario;
+    private $telefone_usuario;
     private $tipo_usuario;
     private $senha_usuario;
+    private $foto_usuario;
+    private $descricao_usuario;
     private $status_usuario;
     private $criado_em;
     private $atualizado_em;
@@ -40,7 +43,7 @@ class Usuario{
     }
 // Buscar usuários por páginas limitadas -----------
     public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
-        $totalQuery = "SELECT COUNT(*) FROM `tbl_usuario`";
+        $totalQuery = "SELECT COUNT(*) FROM tbl_usuario";
         $totalStmt = $this->db->query($totalQuery);
         $total_de_registros = $totalStmt->fetchColumn();
         $offset = ($pagina - 1) * $por_pagina;
@@ -99,25 +102,37 @@ class Usuario{
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Buscar usuário por e-mail (ativo)
+    function buscarUsuariosPorTelefone($telefone) {
+        $sql = "SELECT * FROM tbl_usuario WHERE telefone_usuario = :telefone AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':telefone', $telefone);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 
 
 // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
     // Registrar novo usuário / create
-    function registrarUsuarios($nome, $email, $senha, $tipo, $status) {
+    function registrarUsuarios($nome, $email, $senha, $descricao, $telefone, $foto, $tipo, $status) {
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
         $sql = "INSERT INTO tbl_usuario 
-        (nome_usuario, email_usuario, senha_usuario, tipo_usuario, status_usuario) 
-        VALUES (:nome, :email, :senha, :tipo, :status)";
+        (nome_usuario, email_usuario, senha_usuario, descricao_usuario, telefone_usuario, foto_usuario, tipo_usuario, status_usuario) 
+        VALUES (:nome, :email, :senha, :descricao, :telefone, :foto, :tipo, :status)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':nome', $nome);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':senha', $senhaHash);
+        $stmt->bindParam(':descricao', $descricao);
+         $stmt->bindParam(':telefone', $telefone);
+        $stmt->bindParam(':foto', $foto);
         $stmt->bindParam(':tipo', $tipo);
         $stmt->bindParam(':status', $status);
-
+       
         if ($stmt->execute()) {
             return $this->db->lastInsertId();
         } else {

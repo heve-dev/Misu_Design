@@ -32,6 +32,9 @@ class UsuarioController extends AdminController{
             $_POST["email_usuario"],
             $_POST["senha_usuario"],
             $_POST["tipo_usuario"],
+            $_POST["descricao_usuario"],
+            $_POST["telefone_usuario"],
+            $_POST["foto_usuario"],
             "Ativo",
             $imagem
         )){
@@ -44,7 +47,6 @@ class UsuarioController extends AdminController{
      // método - index
     public function index() {
         $resultado = $this->usuario->buscarUsuarios();
-       echo "Cheguei";
 }
 
   //raiz do array

@@ -21,3 +21,13 @@
     width: 150px;
     height: auto;
 }
+.iconlogin {
+    text-decoration: none;
+    color: #4d0422;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   padding: 10px 20px;
+
+}
