@@ -11,10 +11,10 @@
     <input type="password" name="senha_usuario" id="senha_usuario" required>
     <br>
     <label for="Tipo">Tipo</label>
-    <select name="tipo_usuario" id="tipo_usuario" required>
-        <option value="admin">Admin</option>
-        <option value="user">Usuário</option>
-<select>
+        <select name="tipo_usuario" id="tipo_usuario" required>
+            <option value="admin">Admin</option>
+            <option value="user">Usuário</option>
+        </select>
     <br>
     <label for="imagem">Imagem</label>
     <input type="file" name="imagem" id="imagem" accept="image/*">

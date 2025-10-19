@@ -5,14 +5,14 @@ namespace App\Misu\Model;
 use PDO;
 
 /* Executa uma instrução preparada passando um array de valores */
-class Orcamento{
-    private $id_orcamento;
+class Pedido{
+    private $id_pedido;
     private $id_cliente;
-    private $id_categoria;
-    private $id_pagamento;
-    private $descricao_orcamento;
-    private $status_orcamento;
-    private $data_orcamento;
+    private $id_servico;
+    private $descricao_pedido;
+    private $quantidade_solicitada;
+    private $total_valor_pedido;
+    private $status_pedido;
     private $criado_em;
     private $atualizado_em;
     private $excluido_em;
@@ -26,38 +26,38 @@ class Orcamento{
  // --------------- MÉTODOS DE BUSCA DE DADOS ---------------
 
     // Buscar todos os orçamentos
-    public function buscarOrcamentos() {
-        $sql = "SELECT * FROM tbl_orcamento WHERE excluido_em IS NULL";
+    public function buscarPedidos() {
+        $sql = "SELECT * FROM tbl_pedido WHERE excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function totalDeOrcamentos() {
-    $sql = "SELECT COUNT(*) as total FROM tbl_orcamento";
+    public function totalDePedidos() {
+    $sql = "SELECT COUNT(*) as total FROM tbl_pedido";
     $stmt = $this->db->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
-public function totalDeOrcamentosAtivos() {
-    $sql = "SELECT COUNT(*) as total FROM tbl_orcamento WHERE excluido_em IS NULL";
+public function totalDePedidosAtivos() {
+    $sql = "SELECT COUNT(*) as total FROM tbl_pedido WHERE excluido_em IS NULL";
     $stmt = $this->db->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
-public function totalDeOrcamentosInativos() {
-    $sql = "SELECT COUNT(*) as total FROM tbl_orcamento WHERE excluido_em IS NOT NULL";
+public function totalDePedidosInativos() {
+    $sql = "SELECT COUNT(*) as total FROM tbl_pedido WHERE excluido_em IS NOT NULL";
     $stmt = $this->db->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
-        $totalQuery = "SELECT COUNT(*) FROM `tbl_orcamento`";
+        $totalQuery = "SELECT COUNT(*) FROM `tbl_pedido`";
         $totalStmt = $this->db->query($totalQuery);
         $total_de_registros = $totalStmt->fetchColumn();
         $offset = ($pagina - 1) * $por_pagina;
-        $dataQuery = "SELECT * FROM `tbl_orcamento` LIMIT :limit OFFSET :offset";
+        $dataQuery = "SELECT * FROM `tbl_pedido` LIMIT :limit OFFSET :offset";
         $dataStmt = $this->db->prepare($dataQuery);
         $dataStmt->bindValue(':limit', $por_pagina, PDO::PARAM_INT);
         $dataStmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -76,17 +76,17 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
         ];
     }
     // Buscar orçamentos excluídos
-    public function buscarOrcamentosExcluidos() {
-        $sql = "SELECT * FROM tbl_orcamento WHERE excluido_em IS NOT NULL";
+    public function buscarPedidosExcluidos() {
+        $sql = "SELECT * FROM tbl_pedido WHERE excluido_em IS NOT NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Buscar orçamento por ID
-    public function buscarOrcamentoPorId($id) {
-        $sql = "SELECT * FROM tbl_orcamento 
-                WHERE id_orcamento = :id 
+    public function buscarPedidosPorId($id) {
+        $sql = "SELECT * FROM tbl_pedido 
+                WHERE id_pedido = :id 
                 AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
@@ -95,8 +95,8 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
     }
 
     // Buscar orçamentos por cliente
-    public function buscarOrcamentosPorCliente($id_cliente) {
-        $sql = "SELECT * FROM tbl_orcamento 
+    public function buscarPedidosPorCliente($id_cliente) {
+        $sql = "SELECT * FROM tbl_pedido 
                 WHERE id_cliente = :id_cliente 
                 AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
@@ -106,20 +106,20 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
     }
 
     // Buscar orçamentos por categoria
-    public function buscarOrcamentosPorCategoria($id_categoria) {
-        $sql = "SELECT * FROM tbl_orcamento 
-                WHERE id_categoria = :id_categoria 
+    public function buscarPedidosPorServico($id_servico) {
+        $sql = "SELECT * FROM tbl_pedido 
+                WHERE id_servico = :id_servico 
                 AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id_categoria', $id_categoria);
+        $stmt->bindParam(':id_servico', $id_servico);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Buscar orçamentos por status (ex: 'em análise', 'aprovado', 'rejeitado')
-    public function buscarOrcamentosPorStatus($status) {
-        $sql = "SELECT * FROM tbl_orcamento 
-                WHERE status_orcamento = :status 
+    public function buscarPedidosPorStatus($status) {
+        $sql = "SELECT * FROM tbl_pedido 
+                WHERE status_pedido = :status 
                 AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':status', $status);
@@ -128,9 +128,9 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
     }
 
     // Buscar orçamentos por período
-    public function buscarOrcamentosPorPeriodo($dataInicio, $dataFim) {
-        $sql = "SELECT * FROM tbl_orcamento 
-                WHERE data_orcamento BETWEEN :inicio AND :fim 
+    public function buscarPedidosPorPeriodo($dataInicio, $dataFim) {
+        $sql = "SELECT * FROM tbl_pedido 
+                WHERE data_pedido BETWEEN :inicio AND :fim 
                 AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':inicio', $dataInicio);
@@ -142,17 +142,15 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
     // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
     // Registrar novo orçamento
-    public function registrarOrcamento($id_cliente, $id_categoria, $id_pagamento, $descricao, $status, $data_orcamento) {
-        $sql = "INSERT INTO tbl_orcamento 
-                (id_cliente, id_categoria, id_pagamento, descricao_orcamento, status_orcamento, data_orcamento) 
-                VALUES (:id_cliente, :id_categoria, :id_pagamento, :descricao, :status, :data_orcamento)";
+    public function registrarPedidos($id_cliente, $id_servico, $descricao, $status) {
+        $sql = "INSERT INTO tbl_pedido 
+                (id_cliente, id_servico, descricao_pedido, status_pedido) 
+                VALUES (:id_cliente, :id_servico, :descricao, :status)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id_cliente', $id_cliente);
-        $stmt->bindParam(':id_categoria', $id_categoria);
-        $stmt->bindParam(':id_pagamento', $id_pagamento);
+        $stmt->bindParam(':id_servico', $id_servico);
         $stmt->bindParam(':descricao', $descricao);
         $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':data_orcamento', $data_orcamento);
 
         if ($stmt->execute()) {
             return $this->db->lastInsertId();
@@ -162,33 +160,31 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
     }
 
     // Atualizar orçamento
-    public function atualizarOrcamento($id, $id_categoria, $id_pagamento, $descricao, $status, $data_orcamento) {
+    public function atualizarPedidos($id, $id_servico, $nome_servico, $descricao, $status) {
         $dataAtual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_orcamento SET 
-                    id_categoria = :id_categoria,
-                    id_pagamento = :id_pagamento,
-                    descricao_orcamento = :descricao,
-                    status_orcamento = :status,
-                    data_orcamento = :data_orcamento,
+        $sql = "UPDATE tbl_pedido SET 
+                    id_servico = :id_servico,
+                    nome_servico = :nome_servico,
+                    descricao_pedido = :descricao,
+                    status_pedido = :status,
                     atualizado_em = :atualizado
-                WHERE id_orcamento = :id";
+                WHERE id_pedido = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':id_categoria', $id_categoria);
-        $stmt->bindParam(':id_pagamento', $id_pagamento);
+        $stmt->bindParam(':id_servico', $id_servico);
+        $stmt->bindParam(':nome_servico', $nome_servico);
         $stmt->bindParam(':descricao', $descricao);
         $stmt->bindParam(':status', $status);
-        $stmt->bindParam(':data_orcamento', $data_orcamento);
         $stmt->bindParam(':atualizado', $dataAtual);
         return $stmt->execute();
     }
 
     // Inativar orçamento (exclusão lógica)
-    public function inativarOrcamento($id) {
+    public function inativarPedidos($id) {
         $dataAtual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_orcamento 
+        $sql = "UPDATE tbl_pedido 
                 SET excluido_em = :excluido 
-                WHERE id_orcamento = :id";
+                WHERE id_pedido = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':excluido', $dataAtual);
@@ -196,10 +192,10 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
     }
 
     // Reativar orçamento excluído
-    public function ativarOrcamentoExcluido($id) {
-        $sql = "UPDATE tbl_orcamento 
+    public function ativarPedidosExcluido($id) {
+        $sql = "UPDATE tbl_pedido 
                 SET excluido_em = NULL 
-                WHERE id_orcamento = :id";
+                WHERE id_pedido = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         return $stmt->execute();

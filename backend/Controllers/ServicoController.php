@@ -82,7 +82,14 @@ class ServicoController {
         View::render("servico/delete", ["id_servico"=> $id]);
     }
 
-    // Atualizar
+  
+    // View Relatorio---------------
+    public function relatorioUsuarios($id, $data_inicio, $data_fim) {
+        View::render("usuario/details", 
+        ["id"=> $id, "data_inicio"=> $data_inicio, "data_fim"=> $data_fim]);
+    }
+
+      // Atualizar
     public function atualizarServicos() {
         echo "Atualizar Serviço";
     }
@@ -91,10 +98,6 @@ class ServicoController {
     public function deletarServicos() {
         echo "Deletar Serviço";  
     }
-    // View Relatorio---------------
-    public function relatorioUsuarios($id, $data_inicio, $data_fim) {
-        View::render("usuario/details", 
-        ["id"=> $id, "data_inicio"=> $data_inicio, "data_fim"=> $data_fim]);
-    }
 }
+
 ?>

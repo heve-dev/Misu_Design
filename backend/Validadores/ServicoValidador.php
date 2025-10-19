@@ -16,6 +16,7 @@ class ServicoValidador {
         if(isset($dados['status_servico']) && empty($dados['status_servico'])){
             $erros[] = "O campo status é obrigatório.";
         }
+        
 
         return $erros;
     }

@@ -7,12 +7,12 @@ use PDO;
 class Usuario{
     private $id_usuario;
     private $nome_usuario;
-    private $email_usuario;
     private $telefone_usuario;
-    private $tipo_usuario;
+    private $email_usuario;
     private $senha_usuario;
     private $foto_usuario;
     private $descricao_usuario;
+    private $tipo_usuario;
     private $status_usuario;
     private $criado_em;
     private $atualizado_em;
@@ -116,20 +116,20 @@ class Usuario{
 // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
     // Registrar novo usuário / create
-    function registrarUsuarios($nome, $email, $senha, $descricao, $telefone, $foto, $tipo, $status) {
+    function registrarUsuarios($nome, $telefone, $email, $senha, $foto, $descricao, $tipo, $status) {
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
         $sql = "INSERT INTO tbl_usuario 
-        (nome_usuario, email_usuario, senha_usuario, descricao_usuario, telefone_usuario, foto_usuario, tipo_usuario, status_usuario) 
-        VALUES (:nome, :email, :senha, :descricao, :telefone, :foto, :tipo, :status)";
+        (nome_usuario, telefone_usuario, email_usuario, senha_usuario, foto_usuario, descricao_usuario, tipo_usuario, status_usuario) 
+        VALUES (:nome, :telefone, :email, :senha, :foto, :descricao, :tipo, :status)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':telefone', $telefone);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':senha', $senhaHash);
-        $stmt->bindParam(':descricao', $descricao);
-         $stmt->bindParam(':telefone', $telefone);
         $stmt->bindParam(':foto', $foto);
+        $stmt->bindParam(':descricao', $descricao);
         $stmt->bindParam(':tipo', $tipo);
         $stmt->bindParam(':status', $status);
        
@@ -139,16 +139,17 @@ class Usuario{
             return false;
         }
     }
-
-    // Atualizar dados de um usuário existente / update
-    function atualizarUsuarios($id, $nome, $email, $senha, $tipo, $status) {
+    function atualizarUsuarios($id, $nome, $telefone, $email, $senha, $foto, $descricao, $tipo, $status) {
         $dataatual = date('Y-m-d H:i:s');
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
         $sql = "UPDATE tbl_usuario SET 
                     nome_usuario = :nome,
+                    telefone_usuario = :telefone,
                     email_usuario = :email,
                     senha_usuario = :senha,
+                    foto_usuario = :foto,
+                    descricao_usuario = :descricao,
                     tipo_usuario = :tipo,
                     status_usuario = :status,
                     atualizado_em = :atual
@@ -158,8 +159,11 @@ class Usuario{
 
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':nome', $nome);
+        $stmt->bindParam(':telefone', $telefone);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':senha', $senhaHash);
+        $stmt->bindParam(':foto', $foto);
+        $stmt->bindParam(':descricao', $descricao);
         $stmt->bindParam(':tipo', $tipo);
         $stmt->bindParam(':status', $status);
         $stmt->bindParam(':atual', $dataatual);

@@ -15,13 +15,13 @@
     <div class="mb-3">
         <label class="w3-text-blue">Produtos</label>
         <div id="produtos-container"></div>
-    <button type="button" onclick="addProduto()" class="w3-button w3-teal">Adicionar Produto</button>
-</div>
-    <label for="Categoria">Categoria</label>
+        <button type="button" onclick="addProduto()" class="w3-button w3-teal">Adicionar Produto</button>
+    </div>
+     <label for="Categoria">Categoria</label>
     <select name="categoria_servico" id="categoria_servico" required>
         <?php 
         foreach($categorias as $categoria){
-            echo '<option value='.$categoria["id_categoria"].'>'.$categoria["nome_categoria"].'</option>';
+            echo '<option value='.$categoria["categoria_servico"].'>'.$categoria["categoria_servico"].'</option>';
         }
         ?>
     </select>

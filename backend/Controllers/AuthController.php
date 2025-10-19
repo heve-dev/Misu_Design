@@ -65,7 +65,7 @@ if(!empty($erros)){
             Redirect::redirecionarComMensagem('/register', 'erros', 'Erro ao cadastrar, problema com seu e-mail. Tente outro.');
         }
 
-        $novoUsuarioId = $this->usuarioModel->registrarUsuarios($nome, $email, $senha, 'usuario', 'Ativo', 'null');
+        $novoUsuarioId = $this->usuarioModel->registrarUsuarios($nome, $telefone = '', $email, $senha, $foto = '', $descricao = '', $tipo = 'usuario', $status = 'ativo', 'null');
         if($novoUsuarioId){
             Redirect::redirecionarComMensagem('/login', 'success', 'Cadastro realizado com sucesso! Faça login para continuar.');
         } else {
