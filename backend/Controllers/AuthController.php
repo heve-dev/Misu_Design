@@ -30,7 +30,7 @@ class AuthController {
         $this->session->destroy();
         Redirect::redirecionarComMensagem('login', 'success', 'Logout realizado com sucesso!');
     }
-    public function autenticar(): void{
+    public function authenticar(): void{
         $email = $_POST['email_usuario'] ?? null;
         $senha = $_POST['senha_usuario'] ?? null;
         $usuario = $this->usuarioModel->checarCredenciais($email, $senha);
@@ -41,7 +41,7 @@ class AuthController {
               $this->session->set('usuario_tipo', $usuario['tipo_usuario']);
               Redirect::redirecionarPara('/admin/dashboard');
         } else {
-            Redirect::redirecionarComMensagem('/backend/login', 'erros', 'E-mail ou senha incorretos. :( Tente novamente.');
+            Redirect::redirecionarComMensagem('/login', 'erros', 'E-mail ou senha incorretos. :( Tente novamente.');
         }
     }
 
@@ -65,7 +65,11 @@ if(!empty($erros)){
             Redirect::redirecionarComMensagem('/register', 'erros', 'Erro ao cadastrar, problema com seu e-mail. Tente outro.');
         }
 
-        $novoUsuarioId = $this->usuarioModel->registrarUsuarios($nome, $telefone, $email, $senha);
+        $novoUsuarioId = $this->usuarioModel->registrarUsuarios(
+            $nome,  
+            $telefone,
+            $email, 
+            $senha);
         if($novoUsuarioId){
             Redirect::redirecionarComMensagem('/login', 'success', 'Cadastro realizado com sucesso! Faça login para continuar.');
         } else {

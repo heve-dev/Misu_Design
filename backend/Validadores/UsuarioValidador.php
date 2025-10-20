@@ -8,6 +8,11 @@ class UsuarioValidador{
         if(isset($dados['nome_usuario']) && empty($dados['nome_usuario'])){
             $erros[] = "O campo nome é obrigatório.";
         }
+         if(isset($dados['telefone_usuario']) &&  empty($dados['telefone_usuario'])){
+            $erros[] = "O campo telefone é obrigatório.";
+        } elseif(!filter_var($dados['telefone_usuario'])){
+            $erros[] = "O campo telefone deve ser válido.";
+        }
         if(isset($dados['email_usuario']) &&  empty($dados['email_usuario'])){
             $erros[] = "O campo email é obrigatório.";
         } elseif(!filter_var($dados['email_usuario'], FILTER_VALIDATE_EMAIL)){

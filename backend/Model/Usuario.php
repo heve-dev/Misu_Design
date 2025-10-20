@@ -23,8 +23,6 @@ class Usuario{
   public function __construct($db){
         $this->db = $db;
     }
-
-
 // --------------- MÉTODOS DE BUSCA DE DADOS ---------------
 
     // Buscar total de usuarios ativos/inativos etc
@@ -127,16 +125,29 @@ class Usuario{
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
-
 // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
     // Registrar novo usuário / create
-    function registrarUsuarios($nome, $telefone, $email, $senha, $tipo = 'usuario', $status ='ativo', $foto = '', $descricao = '') {
+    function registrarUsuarios(
+        $nome, 
+        $telefone, 
+        $email, 
+        $senha, 
+        $tipo = 'usuario', 
+        $status ='ativo', 
+        $foto = '', 
+        $descricao = '') {
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
         $sql = "INSERT INTO tbl_usuario 
-        (nome_usuario, telefone_usuario, email_usuario, senha_usuario, foto_usuario, descricao_usuario, tipo_usuario, status_usuario) 
+        (nome_usuario, 
+        telefone_usuario, 
+        email_usuario, 
+        senha_usuario, 
+        foto_usuario, 
+        descricao_usuario, 
+        tipo_usuario, 
+        status_usuario) 
         VALUES (:nome, :telefone, :email, :senha, :foto, :descricao, :tipo, :status)";
 
         $stmt = $this->db->prepare($sql);
@@ -155,7 +166,16 @@ class Usuario{
             return false;
         }
     }
-    function atualizarUsuarios($id, $nome, $telefone, $email, $senha, $foto, $descricao, $tipo, $status) {
+    function atualizarUsuarios(
+        $id, 
+        $nome, 
+        $telefone, 
+        $email, 
+        $senha, 
+        $foto, 
+        $descricao, 
+        $tipo, 
+        $status) {
         $dataatual = date('Y-m-d H:i:s');
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
@@ -221,10 +241,11 @@ class Usuario{
 
     public function checarCredenciais(string $email, string $senha) {
         $usuario = $this->buscarUsuariosPorEmail($email);
-        if (count($usuario) !== 1) {
+        if (empty($usuario)) {
             return false; // Usuário não encontrado ou múltiplos usuários com o mesmo email
         }
-        $usuario = $usuario[0];
+       
+        //$usuario = $usuario[0];
         if (password_verify($senha, $usuario['senha_usuario'])) {
             return $usuario; // Credenciais válidas
         } 
