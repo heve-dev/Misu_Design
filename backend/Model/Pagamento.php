@@ -9,9 +9,9 @@ use PDO;
 class Pagamento{
     private $id_pagamento;
     private $id_cliente;
+    private $id_pedido;
     private $total_devedor;
     private $status_pagamento;
-    private $data_pagamento;
     private $criado_em;
     private $atualizado_em;
     private $excluido_em;
