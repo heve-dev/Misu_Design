@@ -28,7 +28,7 @@ class Avaliacao{
     // ---------------- MÉTODOS DE BUSCA ----------------
 
     // Buscar todas as avaliações ativas
-    public function buscarAvaliacoesAtivas() {
+    public function buscarAvaliacoes() {
         $sql = "SELECT * FROM tbl_avaliacao WHERE excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();

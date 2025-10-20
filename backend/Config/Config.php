@@ -11,10 +11,10 @@ class Config
   'driver' => 'mysql',
   'mysql' => 
   array (
-    'host' => 'localhost',
-    'db_name' => 'misu',
-    'username' => 'root',
-    'password' => '',
+    'host' => '216.172.172.207',
+    'db_name' => 'faust537_misu',
+    'username' => 'faust537_misu',
+    'password' => '}r$-j.%RBkm*',
     'charset' => 'utf8',
     'port' => 3306,
   ),

@@ -29,18 +29,51 @@ class Usuario{
 
     // Buscar total de usuarios ativos/inativos etc
  function totalDeUsuarios() {
-    $sql = "SELECT COUNT(*) as total FROM tbl_usuario";
+    $sql = "SELECT count(*) as total FROM tbl_usuario";
     $stmt = $this->db->prepare($sql);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
-    // Buscar todos os usuários ativos
+ // Buscar total de usuarios ativos
+    function totalDeUsuariosAtivos(){
+        $sql = "SELECT count(*) as total FROM tbl_usuario where excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+ // Buscar total de usuarios inativos
+      function totalDeUsuariosInativos(){
+        $sql = "SELECT count(*) as total FROM tbl_usuario where excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    // Buscar todos os usuários especificos
     function buscarUsuarios() {
         $sql = "SELECT * FROM tbl_usuario WHERE excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+        // Buscar todos os usuários inativos
+    function buscarUsuariosInativos() {
+        $sql = "SELECT * FROM tbl_usuario WHERE excluido_em IS NOT NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Buscar usuário por ID
+    function buscarUsuariosPorId($id) {
+        $sql = "SELECT * FROM tbl_usuario WHERE id_usuario = :id AND excluido_em IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 // Buscar usuários por páginas limitadas -----------
     public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
         $totalQuery = "SELECT COUNT(*) FROM tbl_usuario";
@@ -66,23 +99,6 @@ class Usuario{
         ];
     }
 //---------------------------------
-
-    // Buscar todos os usuários inativos
-    function buscarUsuariosInativos() {
-        $sql = "SELECT * FROM tbl_usuario WHERE excluido_em IS NOT NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    // Buscar usuário por ID
-    function buscarUsuariosPorId($id) {
-        $sql = "SELECT * FROM tbl_usuario WHERE id_usuario = :id AND excluido_em IS NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
 
     // Buscar usuário por e-mail (ativo)
     function buscarUsuariosPorEmail($email) {
@@ -116,7 +132,7 @@ class Usuario{
 // --------------- MÉTODOS DE ALTERAÇÃO DE DADOS ---------------
 
     // Registrar novo usuário / create
-    function registrarUsuarios($nome, $telefone, $email, $senha, $foto, $descricao, $tipo, $status) {
+    function registrarUsuarios($nome, $telefone, $email, $senha, $tipo = 'usuario', $status ='ativo', $foto = '', $descricao = '') {
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
         $sql = "INSERT INTO tbl_usuario 
@@ -132,7 +148,7 @@ class Usuario{
         $stmt->bindParam(':descricao', $descricao);
         $stmt->bindParam(':tipo', $tipo);
         $stmt->bindParam(':status', $status);
-       
+        
         if ($stmt->execute()) {
             return $this->db->lastInsertId();
         } else {
