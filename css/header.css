@@ -1,8 +1,22 @@
-.navbar-misu{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: #ffe7e7;
+.header {
+  width: 95%;
+  max-width: 1200px;
+  background: #ffe7e7;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem;
+  position: relative;
+  z-index: 10;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 .navbar-misu ul{
     display: flex;
@@ -12,6 +26,9 @@
     text-decoration: none;
     color: #4d0422;
     font-weight: 600;
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .navbar-misu a:hover{
     color: #a10847;
