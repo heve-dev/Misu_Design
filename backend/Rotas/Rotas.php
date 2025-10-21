@@ -10,6 +10,9 @@ class Rotas
         return [
             "GET" => [
 //Usuario        o caminho da URL     o nome do controle e o metodo do controle
+                // Admin Dashboard
+                "/" => "Admin\DashboardController@index",
+                //Usuario Dashboard
                 "/usuario" => "UsuarioController@index",
                 "/usuario/criar" => "UsuarioController@viewCriarUsuarios",
                 "/usuario/listar/{pagina}" => "UsuarioController@viewListarUsuarios",
@@ -18,9 +21,12 @@ class Rotas
 //Servico
                 "/servico" => "ServicosController@index",
                 "/servico/criar" => "ServicoController@viewCriarServicos",
+                '/api/servicos' => 'PublicApiController@getServicos',
                 "/servico/listar" => "ServicoController@viewListarServicos",
+                '/servico/listar/{pagina}' => 'ServicoController@viewListarServicos',
                 "/servico/editar/{id}" => "ServicoController@viewEditarServicos",
                 "/servico/excluir/{id}" => "ServicoController@viewExcluirServicos",
+
 //Contato
                 "/contato" => "ContatoController@index",
                 "/contato/criar" => "ContatoController@viewCriarContato",
@@ -72,7 +78,7 @@ class Rotas
 
 //Servico
                 "/servico/salvar" => "ServicoController@salvarServicos",
-                "/servico/atualizar/{id}" => "ServicoController@atualizarServicos",
+                "/servico/atualizar" => "ServicoController@atualizarServicos",
                 "/servico/deletar" => "ServicoController@deletarServicos",
                 
 //Contato

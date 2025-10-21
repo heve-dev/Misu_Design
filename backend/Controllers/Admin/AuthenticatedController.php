@@ -3,6 +3,7 @@
 namespace App\Misu\Controllers\Admin;
 
 use App\Misu\Core\Session;
+use App\Misu\Core\Flash;
 use App\Misu\Core\Redirect;
 
 abstract class AuthenticatedController{

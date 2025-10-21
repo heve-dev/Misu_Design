@@ -1,23 +1,27 @@
-<div>Sou o create Servico</div>
+<div class="w3-container">
+    <h3>Sou o create Servico</h3>
  o action é pra onde o form vai ser enviado 
-<form action="/backend/servico/salvar" method="post" enctype="multipart/form-data">
-    <label for="Nome">Nome</label>
-    <input type="text" name="nome_servico" id="nome_servico" required>
+<form action="/backend/servico/salvar" method="POST" enctype="multipart/form-data" class="w3-container w3-card-4">
+    <!-- NOME -->
+    <label class="w3-text-blue" for="Nome">Nome do Serviço</label>
+    <input class="w3-input w3-border" type="text" name="nome_servico" required>
     <br>
-
-    
-    <label for="Email">Email</label>
-    <input type="email" name="email_usuario" id="email_usuario" required>
+        <!-- DESCRIÇÃO -->
+    <label class="w3-text-blue" for="Descrição">Descrição do Serviço</label>
+    <input  class="w3-input w3-border" type="text" name="descricao_servico" required>
     <br>
-    <label for="Senha">Senha</label>
-    <input type="password" name="senha_usuario" id="senha_usuario" required>
+        <!-- FOTO -->
+    <label class="w3-text-blue" for="Foto">Foto do Serviço</label>
+    <input class="w3-input w3-border" type="file" name="foto_servico" required>
     <br>
+        <!-- PRODUTO -->
     <div class="mb-3">
         <label class="w3-text-blue">Produtos</label>
         <div id="produtos-container"></div>
         <button type="button" onclick="addProduto()" class="w3-button w3-teal">Adicionar Produto</button>
     </div>
-     <label for="Categoria">Categoria</label>
+        <!-- CATEGORIA -->
+     <label class="w3-text-blue" for="Categoria">Categoria do Serviço</label>
     <select name="categoria_servico" id="categoria_servico" required>
         <?php 
         foreach($categorias as $categoria){
@@ -25,10 +29,10 @@
         }
         ?>
     </select>
-    <button type="submit">Salvar</button>
-
+        <!-- SALVAR -->
+         
+            <button class="w3-button w3-blue" type="submit">Salvar Serviço</button>
 </form>
-
 <script>
 let produtoCount = 0;
 function addProduto() {
@@ -56,3 +60,4 @@ function addProduto() {
         semestreDiv.remove();
     }
 </script>
+</div>

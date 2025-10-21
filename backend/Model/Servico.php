@@ -24,6 +24,16 @@ class Servico{
     }
 
 // --------------- MÉTODOS DE BUSCA DE DADOS ---------------
+// busca de serviços ativos
+   public function buscarServicosAtivos(){
+        $sql = "SELECT nome_servico, descricao_servico, foto_servico 
+                FROM tbl_servico 
+                WHERE status_servico = 'ativo' 
+                ORDER BY criado_em DESC LIMIT 4";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 // Total de serviços
 public function totalDeServicos() {
