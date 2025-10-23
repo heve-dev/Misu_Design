@@ -8,23 +8,28 @@ use App\Misu\Core\Redirect;
 use App\Misu\Validadores\ServicoValidador;
 use App\Misu\Core\FileManager;
 
-class ServicoController {
+class ServicoController extends AdminController{
     public $servico;
     public $db;
     public $gerenciarImagem;
 
     public function __construct() {
+        parent::__construct();
         $this->db = Database::getInstance();
         $this->servico = new Servico($this->db);
         $this->gerenciarImagem = new FileManager('upload');
     }
+
+     public function index() {
+        $this->viewListarServicos();
+    }
+
     // Salvar novo serviço
     public function salvarServicos() {
-        var_dump($_POST); exit;
-        $erros = ServicoValidador::ValidarEntradas($_POST);
-        if(!empty($erros)){
-            Redirect::redirecionarComMensagem("servico/criar","error", implode("<br>", $erros));
+         if (empty($_POST["nome_servico"]) || empty($_FILES['foto_servico']['name'])) {
+            Redirect::redirecionarComMensagem("servico/criar", "error", "Nome e Foto são obrigatórios.");
         }
+
 
         $imagem = $this->gerenciarImagem->salvarArquivo($_FILES['imagem'], 'servico');
         if($this->servico->registrarServicos(
@@ -34,7 +39,6 @@ class ServicoController {
             $_POST["foto_servico"],
             $_POST["status_servico"],
             $imagem,
-            "Ativo"
         )){
             Redirect::redirecionarComMensagem("servico/listar","success","Serviço cadastrado com sucesso!");
         } else {
@@ -42,39 +46,64 @@ class ServicoController {
         }
     }
 
-    // Index
-    public function index() {
-        $resultado = $this->servico->totalDeServicos();
-        var_dump($resultado);
+        // Atualizar
+    public function atualizarServicos() {
+       
+     $id = (int)$_POST['id_servico'];
+        $nome = $_POST['nome_servico'];
+        $descricao = $_POST['descricao_servico'];
+        $imagem = null;
+
+        if (isset($_FILES['foto_servico']) && $_FILES['foto_servico']['error'] == 0 && !empty($_FILES['foto_servico']['name'])) {
+            $imagem = $this->gerenciarImagem->salvarArquivo($_FILES['foto_servico'], 'servicos');
+        }
+
+        if ($this->servico->atualizarServicos($id, $nome, $descricao, $imagem)) {
+            Redirect::redirecionarComMensagem("servico/listar", "success", "Serviço atualizado com sucesso!");
+        } else {
+            Redirect::redirecionarComMensagem("servico/editar/" . $id, "error", "Erro ao atualizar serviço.");
+        }
     }
 
-    // Listar serviços paginados
-    public function viewListarServicos($pagina) {
-        $dados = $this->servico->paginacao($pagina);
-        $total = $this->servico->totalDeServicos();
+    // Deletar
+    public function deletarServicos() {
+        $id = (int)$_POST['id_servico'];
+        if ($this->servico->deletarServicos($id)) {
+            Redirect::redirecionarComMensagem("servico/listar", "success", "Serviço inativado com sucesso!");
+        } else {
+            Redirect::redirecionarComMensagem("servico/listar", "error", "Erro ao inativar serviço.");
+        } 
+    }
+
+
+//---  VIEWS
+
+    // View listar
+    public function viewListarServicos($pagina = 1) {
+        if (empty($pagina) || $pagina <= 0) $pagina = 1;
+        
+        $dados = $this->servico->paginacao($pagina, 50);
+        
         View::render("servico/index", [
-            "servicos"=> $dados,
-            "total_servicos"=> $total[0],
-            "total_inativos" => 22,
-            "total_ativos" => 12
+            "servicos" => $dados['data'],
+            'paginacao' => $dados
         ]);
     }
-//---  VIEWS
+
     // View criar
-    public function viewCriarServicos() {
-        
+    public function viewCriarServicos() { 
         $categorias = $this->servico->listarCategorias();
-        
         View::render("servico/create", ["categorias"=> $categorias]);
     }
 
     // View editar
-    public function viewEditarServicos($id) {
-        $dados = $this->servico->buscarServicosPorId($id);
-        foreach($dados as $servico){
-            $dados = $servico;
+    public function viewEditarServicos(int $id) {
+        $servico = $this->servico->buscarPorID($id);
+        if (!$servico) {
+            Redirect::redirecionarComMensagem("servico/listar", "error", "Serviço não encontrado.");
         }
-        View::render("servico/edit", ["servico"=> $dados]);
+        
+        View::render("servico/edit", ["servico" => $servico]);
     }
 
     // View excluir
@@ -89,15 +118,6 @@ class ServicoController {
         ["id"=> $id, "data_inicio"=> $data_inicio, "data_fim"=> $data_fim]);
     }
 
-      // Atualizar
-    public function atualizarServicos() {
-        echo "Atualizar Serviço";
-    }
-
-    // Deletar
-    public function deletarServicos() {
-        echo "Deletar Serviço";  
-    }
-}
+  }
 
 ?>
