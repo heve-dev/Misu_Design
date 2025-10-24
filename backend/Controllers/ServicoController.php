@@ -5,8 +5,8 @@ use App\Misu\Model\Servico;
 use App\Misu\Database\Database;
 use App\Misu\Core\View;
 use App\Misu\Core\Redirect;
-use App\Misu\Validadores\ServicoValidador;
 use App\Misu\Core\FileManager;
+use App\Misu\Controllers\Admin\AdminController;
 
 class ServicoController extends AdminController{
     public $servico;
@@ -20,6 +20,7 @@ class ServicoController extends AdminController{
         $this->gerenciarImagem = new FileManager('upload');
     }
 
+
      public function index() {
         $this->viewListarServicos();
     }
@@ -29,8 +30,6 @@ class ServicoController extends AdminController{
          if (empty($_POST["nome_servico"]) || empty($_FILES['foto_servico']['name'])) {
             Redirect::redirecionarComMensagem("servico/criar", "error", "Nome e Foto são obrigatórios.");
         }
-
-
         $imagem = $this->gerenciarImagem->salvarArquivo($_FILES['imagem'], 'servico');
         if($this->servico->registrarServicos(
             $_POST["nome_servico"],
@@ -49,16 +48,19 @@ class ServicoController extends AdminController{
         // Atualizar
     public function atualizarServicos() {
        
-     $id = (int)$_POST['id_servico'];
+        $id = (int)$_POST['id_servico'];
+        $categoria= $_POST['categoria_servico'];
         $nome = $_POST['nome_servico'];
         $descricao = $_POST['descricao_servico'];
-        $imagem = null;
+        $valor = $_POST['valor_servico'];
+        $foto = null;
+        $status = $_POST['status_servico'];
 
         if (isset($_FILES['foto_servico']) && $_FILES['foto_servico']['error'] == 0 && !empty($_FILES['foto_servico']['name'])) {
-            $imagem = $this->gerenciarImagem->salvarArquivo($_FILES['foto_servico'], 'servicos');
+            $foto = $this->gerenciarImagem->salvarArquivo($_FILES['foto_servico'], 'servicos');
         }
 
-        if ($this->servico->atualizarServicos($id, $nome, $descricao, $imagem)) {
+        if ($this->servico->atualizarServicos($id, $categoria, $nome, $descricao, $valor, $foto, $status)) {
             Redirect::redirecionarComMensagem("servico/listar", "success", "Serviço atualizado com sucesso!");
         } else {
             Redirect::redirecionarComMensagem("servico/editar/" . $id, "error", "Erro ao atualizar serviço.");
@@ -98,7 +100,7 @@ class ServicoController extends AdminController{
 
     // View editar
     public function viewEditarServicos(int $id) {
-        $servico = $this->servico->buscarPorID($id);
+        $servico = $this->servico->buscarServicosPorID($id);
         if (!$servico) {
             Redirect::redirecionarComMensagem("servico/listar", "error", "Serviço não encontrado.");
         }
@@ -118,6 +120,6 @@ class ServicoController extends AdminController{
         ["id"=> $id, "data_inicio"=> $data_inicio, "data_fim"=> $data_fim]);
     }
 
-  }
+}
 
 ?>

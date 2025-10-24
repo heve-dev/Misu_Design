@@ -84,10 +84,11 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
     }
 
 // Buscar serviço por ID
-    function buscarServicosPorId($id){
-        $sql = "SELECT * FROM tbl_servico WHERE id_servico = :id AND excluido_em IS NULL";
+    function buscarServicosPorId(int $id){
+        $sql = "SELECT * FROM tbl_servico 
+        WHERE id_servico = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -116,10 +117,29 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
 
 
         // Registrar novo serviço / create
-    function registrarServicos($categoria, $nome, $descricao, $valor, $foto, $status){
+    function registrarServicos(
+        $categoria, 
+        $nome, 
+        $descricao, 
+        $valor, 
+        $foto= '', 
+        $status='ativo'){
+
         $sql = "INSERT INTO tbl_servico 
-        (categoria_servico = :categoria, nome_servico, descricao_servico, valor_servico, foto_servico, status_servico) 
-        VALUES (:categoria, :nome, :descricao, :valor, :foto, :status)";
+        (categoria_servico = :categoria, 
+        nome_servico, 
+        descricao_servico, 
+        valor_servico, 
+        foto_servico, 
+        status_servico) 
+
+        VALUES (
+        :categoria, 
+        :nome, 
+        :descricao, 
+        :valor, 
+        :foto, 
+        :status)";
         
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':categoria', $categoria);
@@ -137,10 +157,18 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
     }
 
     // Atualizar serviço existente / update
-    function atualizarServicos($id, $categoria, $nome, $descricao, $valor, $foto, $status){
+    function atualizarServicos(
+        int $id, 
+        string $categoria, 
+        string $nome, 
+        string $descricao, 
+        $valor, 
+        $foto, 
+        $status){
         $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_servico 
-                SET categoria_servico = :categoria,
+
+        $sql = "UPDATE tbl_servico SET 
+                    categoria_servico = :categoria,
                     nome_servico = :nome,
                     descricao_servico = :descricao,
                     valor_servico = :valor,
@@ -164,26 +192,27 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
             return false;
         }
     }
+ // Inativar serviço (soft delete)
+ public function deletarServicos(int $id){
+        $status = $this->buscarServicosPorId($id);
+        $status = $status['status_servico'] == 'ativo' ? 'Inativo' : 'ativo';
 
-
-    // Inativar serviço (soft delete)
-    function inativarServicos($id){
-        $dataatual = date('Y-m-d H:i:s');
-        $sql = "UPDATE tbl_servico SET excluido_em = :atual WHERE id_servico = :id";
+        $sql = "UPDATE tbl_servico 
+        SET status_servico = :status 
+        WHERE id_servico = :id";
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':atual', $dataatual);
-        if($stmt->execute()){
-            return true;
-        }else{
-            return false;
-        }
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':status', $status);
+        return $stmt->execute();
     }
 
     // Reativar serviço inativo
     function ativarServicos($id){
         $dataatual = NULL;
-        $sql = "UPDATE tbl_servico SET excluido_em = NULL WHERE id_servico = :id";
+        $sql = "UPDATE tbl_servico 
+        SET excluido_em = NULL 
+        WHERE id_servico = :id";
+
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);
@@ -194,7 +223,9 @@ public function paginacao(int $pagina = 1, int $por_pagina = 10): array{
         }
     }
     function listarCategorias() {
-        $sql = "SELECT * FROM tbl_servico WHERE categoria_servico = :categoria AND excluido_em IS NULL";
+        $sql = "SELECT * FROM tbl_servico 
+        WHERE categoria_servico = :categoria 
+        AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

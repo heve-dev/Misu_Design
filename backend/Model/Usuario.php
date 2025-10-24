@@ -85,7 +85,6 @@ class Usuario{
         $dataStmt->execute();
         $dados = $dataStmt->fetchAll(PDO::FETCH_ASSOC);
         $lastPage = ceil($total_de_registros / $por_pagina);
- 
         return [
             'data' => $dados,
             'total' => (int) $total_de_registros,
@@ -118,7 +117,9 @@ class Usuario{
 
     // Buscar usuário por e-mail (ativo)
     function buscarUsuariosPorTelefone($telefone) {
-        $sql = "SELECT * FROM tbl_usuario WHERE telefone_usuario = :telefone AND excluido_em IS NULL";
+        $sql = "SELECT * FROM tbl_usuario 
+        WHERE telefone_usuario = :telefone 
+        AND excluido_em IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':telefone', $telefone);
         $stmt->execute();
@@ -148,7 +149,15 @@ class Usuario{
         descricao_usuario, 
         tipo_usuario, 
         status_usuario) 
-        VALUES (:nome, :telefone, :email, :senha, :foto, :descricao, :tipo, :status)";
+        VALUES (
+        :nome, 
+        :telefone, 
+        :email, 
+        :senha, 
+        :foto, 
+        :descricao, 
+        :tipo, 
+        :status)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':nome', $nome);
@@ -212,8 +221,9 @@ class Usuario{
     }
 
     // Inativar usuário (soft delete)
-    function inativarUsuarios($id) {
+    function deletarUsuarios(int $id) {
         $dataatual = date('Y-m-d H:i:s');
+
         $sql = "UPDATE tbl_usuario SET excluido_em = :atual WHERE id_usuario = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
@@ -228,7 +238,10 @@ class Usuario{
     // Reativar usuário inativo
     function ativarUsuarios($id) {
          $dataatual = NULL;
-        $sql = "UPDATE tbl_usuario SET excluido_em = NULL WHERE id_usuario = :id";
+        $sql = "UPDATE tbl_usuario 
+        SET excluido_em = NULL 
+        WHERE id_usuario = :id";
+        
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':atual', $dataatual);

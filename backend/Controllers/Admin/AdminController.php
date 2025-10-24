@@ -2,6 +2,7 @@
 
 namespace App\Misu\Controllers\Admin;
 
+use App\Misu\Core\Flash;
 use App\Misu\Core\Redirect;
 
 abstract class AdminController extends AuthenticatedController{

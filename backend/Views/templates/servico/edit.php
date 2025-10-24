@@ -1,23 +1,37 @@
 <div>Sou o edit Serviço</div>
  
-<form action="/backend/servico/atualizar/<?php echo $servico['id_servico']; ?>" method="post" enctype="multipart/form-data">
-    <label for="Nome">Nome</label>
-    <input type="text" name="nome_servico" id="nome_servico" value= "<?php echo $servico['nome_servico']; ?>" required>
-    <br>
-    <label for="Email">Email</label>
-    <input type="email" name="email_servico" id="email_servico" value= "<?php echo $servico['email_servico']; ?>" required>
-    <br>
-    <label for="Senha">Senha</label>
-    <input type="password" name="senha_servico" id="senha_servico" value= "" required>
-    <br>
-    <label for="Tipo">Tipo</label>
-    <select name="tipo_servico" id="tipo_servico" value= "<?php echo $servico['tipo_servico']; ?>" required>
-        <option value="admin">Admin</option>
-        <option value="user">Usuário</option>
-<select>
-    <br>
-    <label for="imagem">Imagem</label>
-    <input type="file" name="imagem" id="imagem" accept="image/*">
+<div class="w3-container">
+    <h3>Editando Serviço: <?= htmlspecialchars($servico['nome_servico']); ?></h3>
+    
+    <form action="/backend/servico/atualizar" method="POST" enctype="multipart/form-data" class="w3-container w3-card-4">
+        
+        <input type="hidden" name="id_servico" value="<?= $servico['id_servico']; ?>">
 
-    <button type="submit">Salvar</button>
-</form>
+        <p>
+        <label class="w3-text-blue"><b>Nome do Serviço</b></label>
+        <input class="w3-input w3-border" name="nome_servico" type="text" value="<?= htmlspecialchars($servico['nome_servico']); ?>" required>
+        </p>
+        
+        <p>
+        <label class="w3-text-blue"><b>Descrição Curta</b></label>
+        <input class="w3-input w3-border" name="descricao_servico" type="text" value="<?= htmlspecialchars($servico['descricao_servico']); ?>">
+        </p>
+
+        <p>
+            <label class="w3-text-blue"><b>Foto Principal (Atual)</b></label><br>
+            <img src="/upload/servicos/<?= htmlspecialchars($servico['foto_servico']); ?>" style="width:150px; border: 1px solid #ccc; padding: 4px;">
+        </p>
+
+        <p>
+        <label class="w3-text-blue"><b>Substituir Foto</b></label>
+        <input class="w3-input w3-border" name="foto_servico" type="file">
+        <small>Deixe em branco para manter a foto atual.</small>
+        </p>
+
+        <p>
+        <button type="submit" class="w3-button w3-blue">Salvar Alterações</button>
+        <a href="/backend/servico/listar" class="w3-button w3-grey">Cancelar</a>
+        </p>
+
+    </form>
+</div>

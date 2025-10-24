@@ -15,7 +15,7 @@ class UsuarioController extends AdminController{
     public $db;
     public $gerenciarImagem;
     public function __construct() {
-      
+        parent::__construct();
         $this->db = Database::getInstance();
         $this->usuario = new Usuario($this->db);
         $this->gerenciarImagem = new FileManager('upload');
@@ -54,9 +54,10 @@ class UsuarioController extends AdminController{
    public function viewListarUsuarios($pagina){
         $dados = $this->usuario->paginacao($pagina);
         $total = $this->usuario->totalDeUsuarios();
+        
         View::render("usuario/index", 
         [
-        "usuarios"=> $dados,
+        "usuarios"=> $dados['data'],
          "total_usuarios"=> $total[0],
          "total_inativos" => 22,
          "Total_ativos" => 12

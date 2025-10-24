@@ -52,7 +52,9 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($usuarios as $usuario): ?>
+            <?php foreach ($usuarios as $usuario): 
+              
+              ?>
                 <tr>
                     <td><?= htmlspecialchars($usuario['nome_usuario']) ?></td>
                     <td><?= htmlspecialchars($usuario['email_usuario']) ?></td>
