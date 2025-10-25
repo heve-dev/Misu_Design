@@ -36,7 +36,7 @@ class ContatoController {
     }
 
     public function index() {
-        $resultado = $this->contato->buscarContatos();
+        $resultado = $this->contato->buscarContatosAtivos();
         var_dump($resultado);
     }
 

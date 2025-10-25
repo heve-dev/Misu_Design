@@ -58,8 +58,10 @@ class AvaliacaoController {
     public function viewEditarAvaliacao($id) {
         $dados = $this->avaliacao->buscarAvaliacaoPorId($id);
         foreach($dados as $avaliacao){
+
             $dados = $avaliacao;
         }
+        
         View::render("avaliacao/edit", ["avaliacao"=> $dados]);
     }
 

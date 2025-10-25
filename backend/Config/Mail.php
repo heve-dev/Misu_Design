@@ -9,8 +9,8 @@ class Mail{
             'username'=> 'xxxxxxxxx@gmail.com',
             'password'=> 'xxxxxxxxxx',
             'encryption'=> 'tls',
-            'from_address'=> 'noreply@kipedreiro.com',
-            'from_name'=> 'Kipedreiro',
+            'from_address'=> 'noreply@misu.com',
+            'from_name'=> 'Misu',
             
         ];
     }
